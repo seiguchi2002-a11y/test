@@ -284,6 +284,28 @@
     };
     const tag = (value) => <Tag color={statusColor[value] || "blue"}>{value}</Tag>;
     const maskPhone = (phone) => phone ? phone.replace(/^(\d{3})\d{4}(\d{4})$/, "$1****$2") : "-";
+    const agreementConsentOpenids = {
+      张三: ["oWX8x***9kl", "oWX8x7aB9cD2eF3gH4iJ5kL6mN"],
+      李四: ["oWX9b***7pq", "oWX9bA1cD2eF3gH4iJ5kL6mN7p"],
+      王五: ["oWX3p***8Mn", "oWX3pQ7rS8tU9vW1xY2zA3bC4"],
+      赵六: ["oWX4q***6De", "oWX4qR8sT9uV1wX2yZ3aB4cD5"],
+      陈七: ["oWX5r***1Fg", "oWX5rS9tU1vW2xY3zA4bC5dE6"],
+      孙八: ["oWX6s***3Hi", "oWX6sT1uV2wX3yZ4aB5cD6eF7"],
+      周九: ["oWX7t***5Jk", "oWX7tU2vW3xY4zA5bC6dE7fG8"],
+      吴十: ["oWX8u***7Lm", "oWX8uV3wX4yZ5aB6cD7eF8gH9"],
+      郑一: ["oWX9v***9No", "oWX9vW4xY5zA6bC7dE8fG9hI1"],
+      冯二: ["oWX1w***2Pq", "oWX1wX5yZ6aB7cD8eF9gH1iJ2"],
+      韩三: ["oWX2y***3Rs", "oWX2yY6zA7bC8dE9fG1hI2jK3"],
+      杨四: ["oWX3z***4Tu", "oWX3zZ7aB8cD9eF1gH2iJ3kL4"],
+      朱五: ["oWX4a***5Vw", "oWX4aA8bC9dE1fG2hI3jK4lM5"],
+      秦六: ["oWX5b***6Xy", "oWX5bB9cD1eF2gH3iJ4kL5mN6"],
+      何七: ["oWX6c***7Za", "oWX6cC1dE2fG3hI4jK5lM6nO7"],
+      吕八: ["oWX7d***8Bc", "oWX7dD2eF3gH4iJ5kL6mN7oP8"],
+      施九: ["oWX8e***9De", "oWX8eE3fG4hI5jK6lM7nO8pQ9"],
+      孔十: ["oWX9f***1Fg", "oWX9fF4gH5iJ6kL7mN8oP9qR1"],
+      曹一: ["oWX1g***2Hi", "oWX1gG5hI6jK7lM8nO9pQ1rS2"],
+      严二: ["oWX2h***3Jk", "oWX2hH6iJ7kL8mN9oP1qR2sT3"]
+    };
 
     const options = {
       agreementType: ["使用协议", "服务须知", "购买须知", "积分兑换须知", "操作指南"],
@@ -328,26 +350,26 @@
         { id: "AG-GUIDE-003", type: "操作指南", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>操作指南当前版本 v1.2</strong>，包含机器人取件、输入取件码、异常反馈、客服处理等完整步骤说明。</p>" }
       ],
       agreementConsent: [
-        { id: "AC-USE-001", userName: "张三", phone: "13812345678", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 10:12", content: "用户当时同意的使用协议 v1.2 正文快照。" },
-        { id: "AC-USE-002", userName: "李四", phone: "13987654321", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 11:35", content: "用户当时同意的使用协议 v1.2 正文快照。" },
-        { id: "AC-USE-003", userName: "王五", phone: "13666668888", type: "使用协议", title: "用户使用协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的使用协议 v1.1 正文快照。" },
-        { id: "AC-USE-004", userName: "赵六", phone: "13511112222", type: "使用协议", title: "用户使用协议", version: "v1.0", agreedAt: "2026-02-08 14:40", content: "用户当时同意的使用协议 v1.0 正文快照。" },
-        { id: "AC-SVC-001", userName: "陈七", phone: "13722223333", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 12:20", content: "用户当时同意的服务须知 v1.2 正文快照。" },
-        { id: "AC-SVC-002", userName: "孙八", phone: "13233334444", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的服务须知 v1.2 正文快照。" },
-        { id: "AC-SVC-003", userName: "周九", phone: "13155556666", type: "服务须知", title: "机器人配送服务须知", version: "v1.1", agreedAt: "2026-04-28 16:10", content: "用户当时同意的服务须知 v1.1 正文快照。" },
-        { id: "AC-SVC-004", userName: "吴十", phone: "13377778888", type: "服务须知", title: "机器人配送服务须知", version: "v1.0", agreedAt: "2026-03-12 10:02", content: "用户当时同意的服务须知 v1.0 正文快照。" },
-        { id: "AC-BUY-001", userName: "郑一", phone: "13488889999", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的购买须知 v1.2 正文快照。" },
-        { id: "AC-BUY-002", userName: "冯二", phone: "13799990000", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-19 18:30", content: "用户当时同意的购买须知 v1.2 正文快照。" },
-        { id: "AC-BUY-003", userName: "韩三", phone: "15011112222", type: "购买须知", title: "特惠卡购买须知", version: "v1.1", agreedAt: "2026-04-19 12:12", content: "用户当时同意的购买须知 v1.1 正文快照。" },
-        { id: "AC-BUY-004", userName: "杨四", phone: "15133334444", type: "购买须知", title: "特惠卡购买须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的购买须知 v1.0 正文快照。" },
-        { id: "AC-POINT-001", userName: "朱五", phone: "15255556666", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-20 08:42", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
-        { id: "AC-POINT-002", userName: "秦六", phone: "15377778888", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-19 15:16", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
-        { id: "AC-POINT-003", userName: "何七", phone: "15599990000", type: "积分兑换须知", title: "积分兑换须知", version: "v1.1", agreedAt: "2026-04-21 11:52", content: "用户当时同意的积分兑换须知 v1.1 正文快照。" },
-        { id: "AC-POINT-004", userName: "吕八", phone: "15611113333", type: "积分兑换须知", title: "积分兑换须知", version: "v1.0", agreedAt: "2026-02-11 13:23", content: "用户当时同意的积分兑换须知 v1.0 正文快照。" },
-        { id: "AC-GUIDE-001", userName: "施九", phone: "15722224444", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-20 13:08", content: "用户当时同意的操作指南 v1.2 正文快照。" },
-        { id: "AC-GUIDE-002", userName: "孔十", phone: "15833335555", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-19 10:19", content: "用户当时同意的操作指南 v1.2 正文快照。" },
-        { id: "AC-GUIDE-003", userName: "曹一", phone: "15944446666", type: "操作指南", title: "机器人取件操作指南", version: "v1.1", agreedAt: "2026-04-13 16:33", content: "用户当时同意的操作指南 v1.1 正文快照。" },
-        { id: "AC-GUIDE-004", userName: "严二", phone: "18855557777", type: "操作指南", title: "机器人取件操作指南", version: "v1.0", agreedAt: "2026-03-06 09:24", content: "用户当时同意的操作指南 v1.0 正文快照。" }
+        { id: "AC-USE-001", nickname: "张三", phone: "13812345678", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 10:12", content: "用户当时同意的使用协议 v1.2 正文快照。" },
+        { id: "AC-USE-002", nickname: "李四", phone: "13987654321", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 11:35", content: "用户当时同意的使用协议 v1.2 正文快照。" },
+        { id: "AC-USE-003", nickname: "王五", phone: "13666668888", type: "使用协议", title: "用户使用协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的使用协议 v1.1 正文快照。" },
+        { id: "AC-USE-004", nickname: "赵六", phone: "13511112222", type: "使用协议", title: "用户使用协议", version: "v1.0", agreedAt: "2026-02-08 14:40", content: "用户当时同意的使用协议 v1.0 正文快照。" },
+        { id: "AC-SVC-001", nickname: "陈七", phone: "13722223333", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 12:20", content: "用户当时同意的服务须知 v1.2 正文快照。" },
+        { id: "AC-SVC-002", nickname: "孙八", phone: "13233334444", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的服务须知 v1.2 正文快照。" },
+        { id: "AC-SVC-003", nickname: "周九", phone: "13155556666", type: "服务须知", title: "机器人配送服务须知", version: "v1.1", agreedAt: "2026-04-28 16:10", content: "用户当时同意的服务须知 v1.1 正文快照。" },
+        { id: "AC-SVC-004", nickname: "吴十", phone: "13377778888", type: "服务须知", title: "机器人配送服务须知", version: "v1.0", agreedAt: "2026-03-12 10:02", content: "用户当时同意的服务须知 v1.0 正文快照。" },
+        { id: "AC-BUY-001", nickname: "郑一", phone: "13488889999", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的购买须知 v1.2 正文快照。" },
+        { id: "AC-BUY-002", nickname: "冯二", phone: "13799990000", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-19 18:30", content: "用户当时同意的购买须知 v1.2 正文快照。" },
+        { id: "AC-BUY-003", nickname: "韩三", phone: "15011112222", type: "购买须知", title: "特惠卡购买须知", version: "v1.1", agreedAt: "2026-04-19 12:12", content: "用户当时同意的购买须知 v1.1 正文快照。" },
+        { id: "AC-BUY-004", nickname: "杨四", phone: "15133334444", type: "购买须知", title: "特惠卡购买须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的购买须知 v1.0 正文快照。" },
+        { id: "AC-POINT-001", nickname: "朱五", phone: "15255556666", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-20 08:42", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
+        { id: "AC-POINT-002", nickname: "秦六", phone: "15377778888", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-19 15:16", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
+        { id: "AC-POINT-003", nickname: "何七", phone: "15599990000", type: "积分兑换须知", title: "积分兑换须知", version: "v1.1", agreedAt: "2026-04-21 11:52", content: "用户当时同意的积分兑换须知 v1.1 正文快照。" },
+        { id: "AC-POINT-004", nickname: "吕八", phone: "15611113333", type: "积分兑换须知", title: "积分兑换须知", version: "v1.0", agreedAt: "2026-02-11 13:23", content: "用户当时同意的积分兑换须知 v1.0 正文快照。" },
+        { id: "AC-GUIDE-001", nickname: "施九", phone: "15722224444", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-20 13:08", content: "用户当时同意的操作指南 v1.2 正文快照。" },
+        { id: "AC-GUIDE-002", nickname: "孔十", phone: "15833335555", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-19 10:19", content: "用户当时同意的操作指南 v1.2 正文快照。" },
+        { id: "AC-GUIDE-003", nickname: "曹一", phone: "15944446666", type: "操作指南", title: "机器人取件操作指南", version: "v1.1", agreedAt: "2026-04-13 16:33", content: "用户当时同意的操作指南 v1.1 正文快照。" },
+        { id: "AC-GUIDE-004", nickname: "严二", phone: "18855557777", type: "操作指南", title: "机器人取件操作指南", version: "v1.0", agreedAt: "2026-03-06 09:24", content: "用户当时同意的操作指南 v1.0 正文快照。" }
       ],
       deliveryOrder: [
         { id: "DO-20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", pickup: "星巴克", delivery: "服务台", pickupCode: "2468", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21", paidAt: "2026-05-20 10:22", payMethod: "微信支付", robotNo: "RB-08", floor: "3F", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-" },
@@ -428,10 +450,14 @@
         { id: "U-010", userId: "U010", openid: "oWX1w***2Pq", fullOpenid: "oWX1wX5yZ6aB7cD8eF9gH1iJ2", nickname: "冯二", phone: "13799990000", registeredAt: "2026-05-10 12:50", lastLoginAt: "2026-05-15 18:38", status: "禁用", points: 80, deliveryRights: 0, cardCount: 0, exchangeCount: 1 }
       ]
     };
+    mock.agreementConsent = mock.agreementConsent.map(item => {
+      const [openid, fullOpenid] = agreementConsentOpenids[item.nickname] || ["-", "-"];
+      return { ...item, openid, fullOpenid };
+    });
 
     const pageFilters = {
       agreement: [["状态", "status", "select", options.enabled], ["生效时间", "effectiveAt", "range"]],
-      agreementConsent: [["用户名", "userName", "input"], ["手机号", "phone", "input"], ["版本号", "version", "input"]],
+      agreementConsent: [["微信OpenID", "openid", "input"], ["昵称", "nickname", "input"], ["手机号", "phone", "input"], ["版本号", "version", "input"]],
       deliveryOrder: [["订单号", "orderNo", "input"], ["用户", "user", "input"], ["手机号", "phone", "input"], ["收件点", "pickup", "input"], ["送达点", "delivery", "input"], ["机器人编号", "robotNo", "input"], ["支付方式", "payMethod", "select", options.payMethod], ["支付状态", "payStatus", "select", options.pay], ["配送状态", "deliveryStatus", "select", options.delivery], ["创建时间", "createdAt", "range"]],
       cardOrder: [["订单号", "orderNo", "input"], ["用户", "user", "input"], ["手机号", "phone", "input"], ["卡类型", "cardType", "select", options.cardType], ["支付状态", "payStatus", "select", options.cardPay], ["使用状态", "useStatus", "select", options.cardUse], ["下单时间", "createdAt", "range"]],
       pointsOrder: [["兑换单号", "exchangeNo", "input"], ["用户", "user", "input"], ["商品", "productName", "input"], ["使用状态", "useStatus", "select", options.pointsUse], ["兑换时间", "exchangeAt", "range"]],
@@ -444,7 +470,7 @@
 
     const columns = {
       agreement: [["版本号","version"],["协议内容","content","richPreview"],["生效时间区间","effectiveRange"],["状态","status","tag"]],
-      agreementConsent: [["用户名","userName"],["手机号","phone","phone"],["版本号","version"]],
+      agreementConsent: [["微信OpenID","openid","openidTooltip"],["昵称","nickname"],["手机号","phone"],["版本号","version"]],
       deliveryOrder: [["订单号","orderNo"],["用户","user"],["手机号","phone","phone"],["收件点","pickup"],["送达点","delivery"],["机器人编号","robotNo"],["金额/权益","amountBenefit"],["支付方式","payMethod"],["支付状态","payStatus","tag"],["配送状态","deliveryStatus","tag"],["创建时间","createdAt"]],
       cardOrder: [["订单号","orderNo"],["用户","user"],["手机号","phone","phone"],["卡类型","cardType"],["金额","amount","money"],["支付状态","payStatus","tag"],["剩余次数","remainTimes"],["到期时间","expireAt"],["下单时间","createdAt"],["支付时间","paidAt"]],
       pointsOrder: [["兑换单号","exchangeNo"],["用户","user"],["商品","productName"],["消耗积分","points"],["数量","quantity"],["使用状态","useStatus","tag"],["兑换时间","exchangeAt"]],
@@ -457,7 +483,7 @@
 
     const detailSections = {
       agreement: [["协议信息", [["协议分类","type"],["版本号","version"],["生效时间区间","effectiveRange"],["状态","status"]]], ["协议内容", [["协议内容","content","rich"]]]],
-      agreementConsent: [["用户同意信息", [["用户名","userName"],["手机号","phone"],["协议标题","title"],["协议类型","type"],["版本号","version"],["同意时间","agreedAt"]]], ["当时协议正文", [["协议内容","content","rich"]]]],
+      agreementConsent: [["用户同意信息", [["微信OpenID","openid"],["昵称","nickname"],["手机号","phone"],["协议标题","title"],["协议类型","type"],["版本号","version"],["同意时间","agreedAt"]]], ["当时协议正文", [["协议内容","content","rich"]]]],
       deliveryOrder: [["基本信息", [["订单号","orderNo"],["用户","user"],["手机号","phone"],["取餐码","pickupCode"],["创建时间","createdAt"],["支付时间","paidAt"],["支付方式","payMethod"],["订单金额","amount"],["支付状态","payStatus"],["配送状态","deliveryStatus"]]], ["配送信息", [["收件点","pickup"],["送达点","delivery"],["机器人编号","robotNo"],["机器人当前楼层","floor"],["任务开始时间","startAt"],["任务完成时间","finishAt"],["异常原因","exception"]]]],
       cardOrder: [["基本信息", [["订单号","orderNo"],["用户","user"],["手机号","phone"],["卡名称","cardName"],["卡类型","cardType"],["金额","amount"],["支付方式","payMethod"],["支付状态","payStatus"],["下单时间","createdAt"],["支付时间","paidAt"]]], ["权益信息", [["总次数","totalTimes"],["已使用次数","usedTimes"],["剩余次数","remainTimes"],["生效时间","startAt"],["到期时间","expireAt"],["状态","useStatus"]]], ["操作记录", [["操作记录","records","list"]]]],
       pointsOrder: [["基本信息", [["兑换单号","exchangeNo"],["用户","user"],["手机号","phone"],["商品名称","productName"],["商品类型","productType"],["消耗积分","points"],["兑换数量","quantity"],["兑换状态","exchangeStatus"],["兑换时间","exchangeAt"]]], ["发放信息", [["权益类型","grantType"],["发放数量","grantQuantity"],["发放状态","grantStatus"],["发放时间","grantAt"],["失败原因","failReason"]]], ["积分处理信息", [["是否已扣积分","deducted"],["是否已返还积分","returned"],["返还时间","returnAt"],["返还原因","returnReason"]]]],
@@ -664,7 +690,7 @@
         if (type === "links") return <Space wrap><Button>查看配送订单</Button><Button>查看特惠卡订单</Button><Button>查看积分兑换订单</Button><Button>查看反馈记录</Button></Space>;
         if (type === "previewImage") return renderValue(record, key, "previewImage");
         if (["status","payStatus","deliveryStatus","useStatus","exchangeStatus","grantStatus"].includes(key)) return tag(record[key]);
-        if (key === "phone") return maskPhone(record[key]);
+        if (key === "phone" && activeKey !== "agreementConsent") return maskPhone(record[key]);
         return record[key] ?? "-";
       };
       return (
