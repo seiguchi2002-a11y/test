@@ -307,6 +307,7 @@
       Select,
       Space,
       Table,
+      Tabs,
       Tag,
       Typography,
       message
@@ -494,6 +495,19 @@
       { key: "D20260520002", no: "D20260520002", name: "特惠卡订单", status: "待支付", user: "李四", amount: "39.90", time: "2026-05-20 09:42" },
       { key: "D20260520003", no: "D20260520003", name: "积分兑换订单", status: "已完成", user: "王五", amount: "300 积分", time: "2026-05-19 18:12" }
     ];
+    const deliveryOrderRows = [
+      { key: "DO20260520001", orderNo: "DO20260520001", nickname: "张三", phone: "13812345678", pickup: "星巴克", delivery: "服务台", robotNo: "RB-08", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21" },
+      { key: "DO20260520002", orderNo: "DO20260520002", nickname: "李四", phone: "13987654321", pickup: "瑞幸咖啡", delivery: "影院前台", robotNo: "RB-03", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "异常", createdAt: "2026-05-20 09:42" },
+      { key: "DO20260520003", orderNo: "DO20260520003", nickname: "王五", phone: "13666668888", pickup: "麦当劳", delivery: "八合里", robotNo: "RB-06", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-20 12:18" },
+      { key: "DO20260520004", orderNo: "DO20260520004", nickname: "赵六", phone: "13511112222", pickup: "肯德基", delivery: "优衣库", robotNo: "RB-01", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "待取件", createdAt: "2026-05-20 13:05" },
+      { key: "DO20260520005", orderNo: "DO20260520005", nickname: "陈七", phone: "13722223333", pickup: "喜茶", delivery: "B1 停车场入口", robotNo: "-", amountBenefit: "¥5.00", payStatus: "待支付", deliveryStatus: "-", createdAt: "2026-05-20 13:28" },
+      { key: "DO20260519007", orderNo: "DO20260519007", nickname: "周九", phone: "13155556666", pickup: "海底捞", delivery: "服务台", robotNo: "RB-05", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-19 18:26" }
+    ];
+    const deliveryOrderLogRows = [
+      { key: "LOG20260520001", orderNo: "DO20260520002", admin: "运营管理员A", refundType: "权益", operatedAt: "2026-05-20 10:18" },
+      { key: "LOG20260519001", orderNo: "DO20260519007", admin: "客服主管B", refundType: "权益", operatedAt: "2026-05-19 18:42" },
+      { key: "LOG20260518001", orderNo: "DO20260518010", admin: "运营管理员C", refundType: "金额", operatedAt: "2026-05-18 09:48" }
+    ];
 
     function StatusTag({ status }) {
       const map = {
@@ -507,6 +521,12 @@
       const item = map[status] || { color: "default", text: status };
       return <Tag color={item.color}>{item.text}</Tag>;
     }
+
+    const isRefundDisabled = (record) => {
+      const disabledPayStatuses = ["待支付", "已退款", "支付失败", "已取消"];
+      const disabledDeliveryStatuses = ["待取件", "配送中", "已完成", "已取消"];
+      return disabledPayStatuses.includes(record.payStatus) || disabledDeliveryStatuses.includes(record.deliveryStatus);
+    };
 
     function StatRow() {
       const stats = [
@@ -781,6 +801,100 @@
       );
     }
 
+    function DeliveryOrdersPage() {
+      const [activeTab, setActiveTab] = React.useState("orders");
+      const orderColumns = [
+        { title: "序号", width: 72, render: (_, __, index) => index + 1 },
+        { title: "订单号", dataIndex: "orderNo" },
+        { title: "昵称", dataIndex: "nickname" },
+        { title: "手机号", dataIndex: "phone" },
+        { title: "收件点", dataIndex: "pickup" },
+        { title: "送达点", dataIndex: "delivery" },
+        { title: "机器人编号", dataIndex: "robotNo" },
+        { title: "金额/权益", dataIndex: "amountBenefit" },
+        { title: "支付状态", dataIndex: "payStatus", render: (status) => <StatusTag status={status} /> },
+        { title: "配送状态", dataIndex: "deliveryStatus", render: (status) => status === "-" ? "-" : <StatusTag status={status} /> },
+        { title: "创建时间", dataIndex: "createdAt" },
+        {
+          title: "操作",
+          fixed: "right",
+          render: (_, record) => (
+            <Space>
+              <Button type="link" size="small">查看详情</Button>
+              <Button type="link" size="small" disabled={isRefundDisabled(record)}>退款</Button>
+            </Space>
+          )
+        }
+      ];
+      const logColumns = [
+        { title: "序号", width: 72, render: (_, __, index) => index + 1 },
+        { title: "订单号", dataIndex: "orderNo" },
+        { title: "管理员", dataIndex: "admin" },
+        { title: "退款类型", dataIndex: "refundType" },
+        { title: "操作时间", dataIndex: "operatedAt" }
+      ];
+      return (
+        <>
+          <div className="section-panel">
+            <Tabs
+              activeKey={activeTab}
+              onChange={setActiveTab}
+              items={[
+                { key: "orders", label: "配送订单" },
+                { key: "logs", label: "操作日志" }
+              ]}
+            />
+          </div>
+          <div className="section-panel filter-panel">
+            <Form layout="vertical">
+              {activeTab === "orders" ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(180px, 1fr))", gap: 16 }}>
+                  <Form.Item label="订单号"><Input placeholder="请输入订单号" allowClear /></Form.Item>
+                  <Form.Item label="昵称"><Input placeholder="请输入昵称" allowClear /></Form.Item>
+                  <Form.Item label="手机号"><Input placeholder="请输入手机号" allowClear /></Form.Item>
+                  <Form.Item label="支付状态"><Select placeholder="请选择" allowClear options={["待支付", "已支付", "已退款", "支付失败", "已取消"].map(item => ({ label: item, value: item }))} /></Form.Item>
+                  <Form.Item label="配送状态"><Select placeholder="请选择" allowClear options={["待取件", "配送中", "已完成", "已取消", "异常"].map(item => ({ label: item, value: item }))} /></Form.Item>
+                  <Form.Item label="创建时间"><RangePicker style={{ width: "100%" }} /></Form.Item>
+                </div>
+              ) : (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(180px, 1fr))", gap: 16 }}>
+                  <Form.Item label="订单号"><Input placeholder="请输入订单号" allowClear /></Form.Item>
+                  <Form.Item label="管理员"><Input placeholder="请输入管理员" allowClear /></Form.Item>
+                  <Form.Item label="退款类型"><Select placeholder="请选择" allowClear options={["金额", "权益"].map(item => ({ label: item, value: item }))} /></Form.Item>
+                  <Form.Item label="时间区间"><RangePicker style={{ width: "100%" }} /></Form.Item>
+                </div>
+              )}
+            </Form>
+          </div>
+          <div className="section-panel operation-panel">
+            <Space>
+              <Button type="primary" icon={<SearchOutlined />}>查询</Button>
+              <Button icon={<ReloadOutlined />}>重置</Button>
+            </Space>
+          </div>
+          <div className="section-panel table-panel">
+            <div className="table-meta">
+              <span>{activeTab === "orders" ? "配送订单列表" : "操作日志列表"}</span>
+              <span>分页默认每页 10 条，支持切换 10 / 20 / 50 条。</span>
+            </div>
+            <Table
+              rowKey="key"
+              columns={activeTab === "orders" ? orderColumns : logColumns}
+              dataSource={activeTab === "orders" ? deliveryOrderRows : deliveryOrderLogRows}
+              scroll={{ x: activeTab === "orders" ? 1500 : 900 }}
+              pagination={{
+                defaultCurrent: 1,
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                pageSizeOptions: [10, 20, 50],
+                showTotal: (total) => `共 ${total} 条`
+              }}
+            />
+          </div>
+        </>
+      );
+    }
+
     function GenericListPage({ pageKey }) {
       const meta = pageMeta[pageKey];
       const getColumns = () => {
@@ -798,7 +912,7 @@
           return [
             { title: "用户ID", dataIndex: "no" },
             { title: "用户昵称", dataIndex: "user" },
-            { title: "手机号", render: () => "138****2468" },
+            { title: "手机号", render: () => "13812345678" },
             { title: "权益状态", render: () => <Tag color="blue">正常</Tag> },
             { title: "注册时间", dataIndex: "time" },
             { title: "操作", render: () => <Button type="link" size="small">查看详情</Button> }
@@ -930,7 +1044,7 @@
                       <Button icon={<MoreOutlined />}>更多操作</Button>
                     </Dropdown>
                   </div>
-                  {activeKey === "protocol" ? <ProtocolPage /> : <GenericListPage pageKey={activeKey} />}
+                  {activeKey === "protocol" ? <ProtocolPage /> : activeKey === "deliveryOrders" ? <DeliveryOrdersPage /> : <GenericListPage pageKey={activeKey} />}
                 </Content>
               </Layout>
             </Layout>
