@@ -1,0 +1,53 @@
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+node_modules
+.pnpm-store/
+.npm/
+.yarn/
+vendor/
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Build, cache, and logs
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+tmp/
+temp/
+*.log
+
+# Office temporary and backup files
+~$*
+*.tmp
+*.bak
+
+# Generated preview images
+outputs/**/preview_*.png

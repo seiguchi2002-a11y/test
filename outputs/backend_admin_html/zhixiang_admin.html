@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智慧商贸后台管理系统</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.27.6/dist/reset.css" />
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/antd@5.27.6/dist/antd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ant-design/icons@5.5.2/dist/index.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+  <style>
+    :root {
+      --primary: #1A65FF;
+      --primary-deep: #0D47C7;
+      --page-bg: #F4F7FB;
+      --border: #E5EAF2;
+      --text-main: #1F2937;
+      --text-secondary: #667085;
+      --sidebar: #111827;
+      --sidebar-active: #1A65FF;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text-main);
+      background: var(--page-bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    #root {
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--sidebar);
+      box-shadow: 8px 0 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .brand {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--primary);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 64px;
+      padding: 0 24px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .content-wrap {
+      margin-left: 248px;
+      min-height: 100vh;
+      background: var(--page-bg);
+    }
+
+    .main-content {
+      padding: 20px 24px 32px;
+    }
+
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 650;
+      line-height: 30px;
+    }
+
+    .page-subtitle {
+      margin: 4px 0 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .section-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    .filter-panel {
+      padding: 18px 18px 4px;
+    }
+
+    .operation-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+    }
+
+    .table-panel {
+      padding: 0 18px 16px;
+    }
+
+    .table-meta {
+      padding: 14px 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stat-item {
+      min-height: 78px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .ant-layout-sider .ant-menu {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .ant-layout-sider .ant-menu-item,
+    .ant-layout-sider .ant-menu-submenu-title {
+      color: rgba(255, 255, 255, 0.78);
+      border-radius: 6px;
+      margin-inline: 10px;
+      width: calc(100% - 20px);
+    }
+
+    .ant-layout-sider .ant-menu-item-selected {
+      background: var(--sidebar-active);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .ant-layout-sider .ant-menu-submenu-selected > .ant-menu-submenu-title {
+      color: #fff;
+    }
+
+    .ant-layout-sider .ant-menu-submenu-arrow,
+    .ant-layout-sider .ant-menu-item-icon {
+      color: inherit;
+    }
+
+    .ant-btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: none;
+    }
+
+    .ant-btn-primary:hover {
+      background: var(--primary-deep) !important;
+      border-color: var(--primary-deep) !important;
+    }
+
+    .ant-table-wrapper .ant-table-thead > tr > th {
+      background: #F7F9FC;
+      color: #344054;
+      font-weight: 600;
+    }
+
+    .ant-table-cell {
+      vertical-align: middle;
+    }
+
+    .drawer-content-block {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-content-block:last-child {
+      border-bottom: 0;
+    }
+
+    .rich-preview {
+      min-height: 140px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #FAFBFC;
+      line-height: 1.7;
+      color: #344054;
+    }
+
+    @media (max-width: 980px) {
+      .content-wrap {
+        margin-left: 0;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .stat-row {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      App,
+      Button,
+      ConfigProvider,
+      DatePicker,
+      Descriptions,
+      Drawer,
+      Dropdown,
+      Form,
+      Input,
+      Layout,
+      Menu,
+      Modal,
+      Popconfirm,
+      Select,
+      Space,
+      Table,
+      Tag,
+      Typography,
+      message
+    } = antd;
+
+    const {
+      BookOutlined,
+      GiftOutlined,
+      IdcardOutlined,
+      LogoutOutlined,
+      MenuFoldOutlined,
+      PlusOutlined,
+      ProfileOutlined,
+      RobotOutlined,
+      SearchOutlined,
+      ShoppingCartOutlined,
+      TeamOutlined,
+      UserOutlined,
+      FileTextOutlined,
+      MessageOutlined,
+      DownloadOutlined,
+      ReloadOutlined,
+      EyeOutlined,
+      EditOutlined,
+      DeleteOutlined,
+      CheckCircleOutlined,
+      StopOutlined,
+      MoreOutlined
+    } = icons;
+
+    const { Header, Sider, Content } = Layout;
+    const { RangePicker } = DatePicker;
+    const { TextArea } = Input;
+
+    const primaryColor = "#1A65FF";
+
+    const menuItems = [
+      {
+        key: "content",
+        icon: <BookOutlined />,
+        label: "内容与协议",
+        children: [
+          { key: "protocol", label: "协议管理" },
+          { key: "agreementUsers", label: "协议同意列表" }
+        ]
+      },
+      {
+        key: "orders",
+        icon: <ShoppingCartOutlined />,
+        label: "订单中心",
+        children: [
+          { key: "deliveryOrders", label: "配送订单" },
+          { key: "cardOrders", label: "特惠卡订单" },
+          { key: "pointsOrders", label: "积分兑换订单" }
+        ]
+      },
+      {
+        key: "points",
+        icon: <GiftOutlined />,
+        label: "积分兑换",
+        children: [
+          { key: "pointsConfig", label: "配置积分可兑换商品/权益" }
+        ]
+      },
+      {
+        key: "cards",
+        icon: <IdcardOutlined />,
+        label: "特惠卡",
+        children: [
+          { key: "cardPackage", label: "套餐配置" }
+        ]
+      },
+      {
+        key: "robot",
+        icon: <RobotOutlined />,
+        label: "机器人",
+        children: [
+          { key: "robotTasks", label: "任务列表" }
+        ]
+      },
+      {
+        key: "feedback",
+        icon: <MessageOutlined />,
+        label: "意见反馈",
+        children: [
+          { key: "feedbackList", label: "反馈列表" }
+        ]
+      },
+      {
+        key: "users",
+        icon: <TeamOutlined />,
+        label: "用户管理",
+        children: [
+          { key: "userList", label: "用户列表" }
+        ]
+      }
+    ];
+
+    const pageMeta = {
+      protocol: { title: "协议管理", parent: "内容与协议", child: "协议管理", desc: "维护小程序内展示的协议、须知、通知和操作指南内容。" },
+      agreementUsers: { title: "协议同意列表", parent: "内容与协议", child: "协议同意列表", desc: "查看用户对各版本协议的确认记录。" },
+      deliveryOrders: { title: "配送订单", parent: "订单中心", child: "配送订单", desc: "查看取餐送物订单、履约状态和异常处理记录。" },
+      cardOrders: { title: "特惠卡订单", parent: "订单中心", child: "特惠卡订单", desc: "查看特惠卡购买、支付和权益发放记录。" },
+      pointsOrders: { title: "积分兑换订单", parent: "订单中心", child: "积分兑换订单", desc: "查看积分兑换订单、发放状态和失败原因。" },
+      pointsConfig: { title: "配置积分可兑换商品/权益", parent: "积分兑换", child: "配置积分可兑换商品/权益", desc: "维护积分商品、所需积分、库存和上下架状态。" },
+      cardPackage: { title: "套餐配置", parent: "特惠卡", child: "套餐配置", desc: "配置周卡、月卡等套餐价格、次数、有效期和适用服务。" },
+      robotTasks: { title: "任务列表", parent: "机器人", child: "任务列表", desc: "查看机器人配送任务、轨迹状态和异常处理。" },
+      feedbackList: { title: "反馈列表", parent: "意见反馈", child: "反馈列表", desc: "处理用户提交的问题反馈和售后线索。" },
+      userList: { title: "用户列表", parent: "用户管理", child: "用户列表", desc: "管理小程序用户资料、手机号、地址和权益摘要。" }
+    };
+
+    const protocolTypes = [
+      { label: "使用协议", value: "使用协议" },
+      { label: "服务须知", value: "服务须知" },
+      { label: "购买须知", value: "购买须知" },
+      { label: "积分兑换须知", value: "积分兑换须知" },
+      { label: "操作指南", value: "操作指南" }
+    ];
+
+    const initialProtocols = [
+      {
+        key: "P-1001",
+        title: "用户使用协议",
+        type: "使用协议",
+        version: "v1.2",
+        effectiveAt: "2026-05-20 09:00",
+        status: "启用",
+        agreedCount: 2684,
+        createdAt: "2026-05-18 10:24",
+        updatedAt: "2026-05-20 08:42",
+        content: "本协议用于约定用户使用智慧商贸小程序服务时的权利义务，包括账号、订单、配送、积分、特惠卡及用户信息保护等内容。"
+      },
+      {
+        key: "P-1002",
+        title: "机器人配送服务须知",
+        type: "服务须知",
+        version: "v1.0",
+        effectiveAt: "2026-05-16 12:00",
+        status: "启用",
+        agreedCount: 921,
+        createdAt: "2026-05-15 16:15",
+        updatedAt: "2026-05-16 11:36",
+        content: "请用户在机器人到达后及时取件，若遇到机器人异常、舱门无法打开或订单状态异常，可通过客服入口提交反馈。"
+      },
+      {
+        key: "P-1003",
+        title: "特惠卡购买须知",
+        type: "购买须知",
+        version: "v1.1",
+        effectiveAt: "2026-05-12 18:00",
+        status: "启用",
+        agreedCount: 436,
+        createdAt: "2026-05-10 09:48",
+        updatedAt: "2026-05-12 17:20",
+        content: "特惠卡购买后按购买顺序生效，同一时间仅允许一张卡处于使用中状态。已购买特惠卡暂不支持退卡。"
+      },
+      {
+        key: "P-1004",
+        title: "积分兑换须知",
+        type: "积分兑换须知",
+        version: "v1.0",
+        effectiveAt: "2026-05-09 10:00",
+        status: "停用",
+        agreedCount: 182,
+        createdAt: "2026-05-08 15:10",
+        updatedAt: "2026-05-14 14:06",
+        content: "积分兑换权益有效期暂定 30 天，兑换后请在有效期内使用。具体兑换比例以页面展示为准。"
+      },
+      {
+        key: "P-1005",
+        title: "机器人取件操作指南",
+        type: "操作指南",
+        version: "v0.9",
+        effectiveAt: "2026-05-06 08:00",
+        status: "停用",
+        agreedCount: 0,
+        createdAt: "2026-05-05 18:30",
+        updatedAt: "2026-05-06 08:01",
+        content: "操作指南草稿，包含用户取件、输入取件码、异常反馈等步骤说明。"
+      }
+    ];
+
+    const simpleRows = [
+      { key: "D20260520001", no: "D20260520001", name: "配送订单", status: "进行中", user: "张三", amount: "5.00", time: "2026-05-20 10:21" },
+      { key: "D20260520002", no: "D20260520002", name: "特惠卡订单", status: "待支付", user: "李四", amount: "39.90", time: "2026-05-20 09:42" },
+      { key: "D20260520003", no: "D20260520003", name: "积分兑换订单", status: "已完成", user: "王五", amount: "300 积分", time: "2026-05-19 18:12" }
+    ];
+
+    function StatusTag({ status }) {
+      const map = {
+        启用: { color: "success", text: "启用" },
+        停用: { color: "default", text: "停用" },
+        进行中: { color: "processing", text: "进行中" },
+        待支付: { color: "warning", text: "待支付" },
+        已完成: { color: "success", text: "已完成" },
+        异常: { color: "error", text: "异常" }
+      };
+      const item = map[status] || { color: "default", text: status };
+      return <Tag color={item.color}>{item.text}</Tag>;
+    }
+
+    function StatRow() {
+      const stats = [
+        ["启用协议", "4"],
+        ["协议类型", "5"],
+        ["今日新增确认", "128"],
+        ["待处理异常", "3"]
+      ];
+      return (
+        <div className="stat-row">
+          {stats.map(([label, value]) => (
+            <div className="stat-item" key={label}>
+              <div className="stat-label">{label}</div>
+              <div className="stat-value">{value}</div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    function ProtocolPage() {
+      const [form] = Form.useForm();
+      const [modalForm] = Form.useForm();
+      const [protocols, setProtocols] = React.useState(initialProtocols);
+      const [filtered, setFiltered] = React.useState(initialProtocols);
+      const [modalOpen, setModalOpen] = React.useState(false);
+      const [modalMode, setModalMode] = React.useState("新增");
+      const [detail, setDetail] = React.useState(null);
+
+      const runSearch = () => {
+        const values = form.getFieldsValue();
+        const result = protocols.filter((item) => {
+          const matchTitle = !values.title || item.title.includes(values.title.trim());
+          const matchType = !values.type || item.type === values.type;
+          const matchStatus = !values.status || item.status === values.status;
+          return matchTitle && matchType && matchStatus;
+        });
+        setFiltered(result);
+        message.success("查询完成");
+      };
+
+      const resetSearch = () => {
+        form.resetFields();
+        setFiltered(protocols);
+      };
+
+      const openCreate = () => {
+        setModalMode("新增");
+        modalForm.resetFields();
+        modalForm.setFieldsValue({ status: "停用", version: "v1.0" });
+        setModalOpen(true);
+      };
+
+      const openEdit = (record) => {
+        setModalMode("编辑");
+        modalForm.setFieldsValue(record);
+        setModalOpen(true);
+      };
+
+      const submitModal = () => {
+        modalForm.validateFields().then((values) => {
+          const now = dayjs().format("YYYY-MM-DD HH:mm");
+          const next = [...protocols];
+          if (values.status === "启用") {
+            next.forEach((item) => {
+              if (item.type === values.type) {
+                item.status = "停用";
+              }
+            });
+          }
+
+          if (modalMode === "新增") {
+            next.unshift({
+              key: `P-${Math.floor(Math.random() * 9000) + 1000}`,
+              ...values,
+              agreedCount: 0,
+              createdAt: now,
+              updatedAt: now,
+              effectiveAt: values.effectiveAt || now
+            });
+          } else {
+            const currentKey = modalForm.getFieldValue("key");
+            const index = next.findIndex((item) => item.key === currentKey);
+            if (index >= 0) {
+              next[index] = {
+                ...next[index],
+                ...values,
+                updatedAt: now
+              };
+            }
+          }
+
+          setProtocols(next);
+          setFiltered(next);
+          setModalOpen(false);
+          message.success(`${modalMode}协议成功`);
+        });
+      };
+
+      const toggleStatus = (record) => {
+        Modal.confirm({
+          title: record.status === "启用" ? "确认停用该协议？" : "确认启用该协议？",
+          content: record.status === "启用"
+            ? "停用后，小程序端将不再展示该版本协议。"
+            : "启用该协议后，同一协议类型下的旧版本协议将自动停用，是否确认？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            const next = protocols.map((item) => {
+              if (record.status !== "启用" && item.type === record.type) {
+                return { ...item, status: "停用" };
+              }
+              if (item.key === record.key) {
+                return { ...item, status: record.status === "启用" ? "停用" : "启用", updatedAt: dayjs().format("YYYY-MM-DD HH:mm") };
+              }
+              return item;
+            });
+            setProtocols(next);
+            setFiltered(next);
+            message.success("状态已更新");
+          }
+        });
+      };
+
+      const deleteRecord = (record) => {
+        if (record.agreedCount > 0) {
+          message.warning("该协议已有用户同意记录，建议停用而不是物理删除");
+          return;
+        }
+        const next = protocols.filter((item) => item.key !== record.key);
+        setProtocols(next);
+        setFiltered(next);
+        message.success("删除成功");
+      };
+
+      const columns = [
+        { title: "协议标题", dataIndex: "title", width: 190, fixed: "left" },
+        { title: "协议类型", dataIndex: "type", width: 140 },
+        { title: "版本号", dataIndex: "version", width: 90 },
+        { title: "生效时间", dataIndex: "effectiveAt", width: 160 },
+        { title: "状态", dataIndex: "status", width: 90, render: (status) => <StatusTag status={status} /> },
+        { title: "确认人数", dataIndex: "agreedCount", width: 100 },
+        { title: "创建时间", dataIndex: "createdAt", width: 160 },
+        { title: "更新时间", dataIndex: "updatedAt", width: 160 },
+        {
+          title: "操作",
+          key: "action",
+          width: 260,
+          fixed: "right",
+          render: (_, record) => (
+            <Space size={8}>
+              <Button type="link" size="small" icon={<EyeOutlined />} onClick={() => setDetail(record)}>查看</Button>
+              <Button type="link" size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>编辑</Button>
+              <Button type="link" size="small" icon={record.status === "启用" ? <StopOutlined /> : <CheckCircleOutlined />} onClick={() => toggleStatus(record)}>
+                {record.status === "启用" ? "停用" : "启用"}
+              </Button>
+              <Popconfirm title="确认删除该协议？" description="已被用户同意过的协议不建议物理删除。" onConfirm={() => deleteRecord(record)} okText="删除" cancelText="取消">
+                <Button danger type="link" size="small" icon={<DeleteOutlined />}>删除</Button>
+              </Popconfirm>
+            </Space>
+          )
+        }
+      ];
+
+      return (
+        <>
+          <StatRow />
+          <div className="section-panel filter-panel">
+            <Form form={form} layout="vertical">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(180px, 1fr))", gap: 16 }}>
+                <Form.Item label="协议标题" name="title">
+                  <Input placeholder="支持模糊搜索" allowClear />
+                </Form.Item>
+                <Form.Item label="协议类型" name="type">
+                  <Select placeholder="请选择" allowClear options={protocolTypes} />
+                </Form.Item>
+                <Form.Item label="状态" name="status">
+                  <Select placeholder="请选择" allowClear options={[{ label: "启用", value: "启用" }, { label: "停用", value: "停用" }]} />
+                </Form.Item>
+                <Form.Item label="生效时间" name="effectiveRange">
+                  <RangePicker style={{ width: "100%" }} />
+                </Form.Item>
+              </div>
+            </Form>
+          </div>
+
+          <div className="section-panel operation-panel">
+            <Space>
+              <Button type="primary" icon={<SearchOutlined />} onClick={runSearch}>查询</Button>
+              <Button icon={<ReloadOutlined />} onClick={resetSearch}>重置</Button>
+              <Button icon={<DownloadOutlined />} onClick={() => message.info("导出任务已创建")}>导出</Button>
+            </Space>
+            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>新增协议</Button>
+          </div>
+
+          <div className="section-panel table-panel">
+            <div className="table-meta">
+              <span>协议列表</span>
+              <span>同一协议类型下，仅允许一个启用中的最新版本协议。</span>
+            </div>
+            <Table
+              rowKey="key"
+              columns={columns}
+              dataSource={filtered}
+              scroll={{ x: 1420 }}
+              pagination={{
+                defaultCurrent: 1,
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                pageSizeOptions: [10, 20, 50],
+                showTotal: (total) => `共 ${total} 条`
+              }}
+            />
+          </div>
+
+          <Modal
+            title={`${modalMode}协议`}
+            open={modalOpen}
+            onCancel={() => setModalOpen(false)}
+            onOk={submitModal}
+            okText="保存"
+            cancelText="取消"
+            width={760}
+            destroyOnClose
+          >
+            <Form form={modalForm} layout="vertical">
+              <Form.Item name="key" hidden><Input /></Form.Item>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <Form.Item label="协议标题" name="title" rules={[{ required: true, message: "请输入协议标题" }]}>
+                  <Input placeholder="例如：用户使用协议" />
+                </Form.Item>
+                <Form.Item label="协议类型" name="type" rules={[{ required: true, message: "请选择协议类型" }]}>
+                  <Select placeholder="请选择协议分类" options={protocolTypes} />
+                </Form.Item>
+                <Form.Item label="版本号" name="version" rules={[{ required: true, message: "请输入版本号" }]}>
+                  <Input placeholder="例如 v1.0" />
+                </Form.Item>
+                <Form.Item label="生效时间" name="effectiveAt" rules={[{ required: true, message: "请选择生效时间" }]}>
+                  <Input placeholder="YYYY-MM-DD HH:mm" />
+                </Form.Item>
+              </div>
+              <Form.Item label="协议内容" name="content" rules={[{ required: true, message: "请输入协议内容" }]}>
+                <TextArea rows={7} placeholder="支持标题、正文、图片、链接等富文本内容。此处为原型文本输入区。" />
+              </Form.Item>
+              <Form.Item label="状态" name="status" rules={[{ required: true, message: "请选择状态" }]}>
+                <Select options={[{ label: "启用", value: "启用" }, { label: "停用", value: "停用" }]} />
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          <Drawer title="协议详情" width={620} open={!!detail} onClose={() => setDetail(null)}>
+            {detail && (
+              <>
+                <Descriptions column={1} bordered size="small">
+                  <Descriptions.Item label="协议标题">{detail.title}</Descriptions.Item>
+                  <Descriptions.Item label="协议类型">{detail.type}</Descriptions.Item>
+                  <Descriptions.Item label="版本号">{detail.version}</Descriptions.Item>
+                  <Descriptions.Item label="生效时间">{detail.effectiveAt}</Descriptions.Item>
+                  <Descriptions.Item label="状态"><StatusTag status={detail.status} /></Descriptions.Item>
+                  <Descriptions.Item label="确认人数">{detail.agreedCount}</Descriptions.Item>
+                  <Descriptions.Item label="创建时间">{detail.createdAt}</Descriptions.Item>
+                  <Descriptions.Item label="更新时间">{detail.updatedAt}</Descriptions.Item>
+                </Descriptions>
+                <div className="drawer-content-block">
+                  <Typography.Title level={5}>协议内容</Typography.Title>
+                  <div className="rich-preview">{detail.content}</div>
+                </div>
+              </>
+            )}
+          </Drawer>
+        </>
+      );
+    }
+
+    function GenericListPage({ pageKey }) {
+      const meta = pageMeta[pageKey];
+      const getColumns = () => {
+        if (pageKey === "robotTasks") {
+          return [
+            { title: "任务编号", dataIndex: "no" },
+            { title: "机器人编号", dataIndex: "name", render: () => "RB-08" },
+            { title: "用户", dataIndex: "user" },
+            { title: "任务状态", dataIndex: "status", render: (status) => <StatusTag status={status === "待支付" ? "异常" : status} /> },
+            { title: "创建时间", dataIndex: "time" },
+            { title: "操作", render: () => <Space><Button type="link" size="small">查看详情</Button><Button type="link" size="small">重新派单</Button></Space> }
+          ];
+        }
+        if (pageKey === "userList") {
+          return [
+            { title: "用户ID", dataIndex: "no" },
+            { title: "用户昵称", dataIndex: "user" },
+            { title: "手机号", render: () => "138****2468" },
+            { title: "权益状态", render: () => <Tag color="blue">正常</Tag> },
+            { title: "注册时间", dataIndex: "time" },
+            { title: "操作", render: () => <Button type="link" size="small">查看详情</Button> }
+          ];
+        }
+        return [
+          { title: "编号", dataIndex: "no" },
+          { title: "名称/类型", dataIndex: "name" },
+          { title: "用户", dataIndex: "user" },
+          { title: "金额/积分", dataIndex: "amount" },
+          { title: "状态", dataIndex: "status", render: (status) => <StatusTag status={status} /> },
+          { title: "创建时间", dataIndex: "time" },
+          { title: "操作", render: () => <Space><Button type="link" size="small">查看详情</Button><Button type="link" size="small">编辑</Button></Space> }
+        ];
+      };
+
+      return (
+        <>
+          <div className="section-panel filter-panel">
+            <Form layout="vertical">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(180px, 1fr))", gap: 16 }}>
+                <Form.Item label="关键词">
+                  <Input placeholder="请输入编号、名称或用户信息" allowClear />
+                </Form.Item>
+                <Form.Item label="状态">
+                  <Select placeholder="请选择" allowClear options={[{ label: "进行中", value: "进行中" }, { label: "待支付", value: "待支付" }, { label: "已完成", value: "已完成" }, { label: "异常", value: "异常" }]} />
+                </Form.Item>
+                <Form.Item label="创建时间">
+                  <RangePicker style={{ width: "100%" }} />
+                </Form.Item>
+              </div>
+            </Form>
+          </div>
+          <div className="section-panel operation-panel">
+            <Space>
+              <Button type="primary" icon={<SearchOutlined />}>查询</Button>
+              <Button icon={<ReloadOutlined />}>重置</Button>
+              <Button icon={<DownloadOutlined />}>导出</Button>
+            </Space>
+            {["pointsConfig", "cardPackage"].includes(pageKey) && <Button type="primary" icon={<PlusOutlined />}>新增</Button>}
+          </div>
+          <div className="section-panel table-panel">
+            <div className="table-meta">
+              <span>{meta.title}列表</span>
+              <span>分页默认每页 10 条，支持切换 10 / 20 / 50 条。</span>
+            </div>
+            <Table
+              rowKey="key"
+              columns={getColumns()}
+              dataSource={simpleRows}
+              pagination={{
+                defaultCurrent: 1,
+                defaultPageSize: 10,
+                showSizeChanger: true,
+                pageSizeOptions: [10, 20, 50],
+                showTotal: (total) => `共 ${total} 条`
+              }}
+            />
+          </div>
+        </>
+      );
+    }
+
+    function AdminApp() {
+      const [activeKey, setActiveKey] = React.useState("protocol");
+      const meta = pageMeta[activeKey] || pageMeta.protocol;
+
+      return (
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: primaryColor,
+              borderRadius: 8,
+              colorLink: primaryColor,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
+            },
+            components: {
+              Layout: { headerBg: "#FFFFFF", siderBg: "#111827" },
+              Menu: { darkItemSelectedBg: primaryColor, darkItemSelectedColor: "#FFFFFF" }
+            }
+          }}
+        >
+          <App>
+            <Layout className="app-shell">
+              <Sider className="sidebar" width={248}>
+                <div className="brand">
+                  <div className="brand-mark">智</div>
+                  <div className="brand-title">智慧商贸后台</div>
+                </div>
+                <Menu
+                  theme="dark"
+                  mode="inline"
+                  selectedKeys={[activeKey]}
+                  defaultOpenKeys={["content", "orders", "points", "cards", "robot", "feedback", "users"]}
+                  items={menuItems}
+                  onClick={({ key }) => setActiveKey(key)}
+                />
+              </Sider>
+              <Layout className="content-wrap">
+                <Header className="top-header">
+                  <div className="header-title">
+                    <MenuFoldOutlined />
+                    <span>智慧商贸小程序业务管理系统</span>
+                  </div>
+                  <Space size={18}>
+                    <Tag color="blue">运营后台</Tag>
+                    <Space>
+                      <UserOutlined />
+                      <span>管理员</span>
+                    </Space>
+                    <Button icon={<LogoutOutlined />}>退出登录</Button>
+                  </Space>
+                </Header>
+                <Content className="main-content">
+                  <div className="page-title-row">
+                    <div>
+                      <Typography.Text type="secondary">{meta.parent} / {meta.child}</Typography.Text>
+                      <h1 className="page-title">{meta.title}</h1>
+                      <p className="page-subtitle">{meta.desc}</p>
+                    </div>
+                    <Dropdown
+                      menu={{
+                        items: [
+                          { key: "refresh", label: "刷新页面" },
+                          { key: "export", label: "导出当前列表" }
+                        ]
+                      }}
+                    >
+                      <Button icon={<MoreOutlined />}>更多操作</Button>
+                    </Dropdown>
+                  </div>
+                  {activeKey === "protocol" ? <ProtocolPage /> : <GenericListPage pageKey={activeKey} />}
+                </Content>
+              </Layout>
+            </Layout>
+          </App>
+        </ConfigProvider>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<AdminApp />);
+  </script>
+</body>
+</html>
