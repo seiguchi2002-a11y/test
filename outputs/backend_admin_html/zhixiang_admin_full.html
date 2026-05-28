@@ -218,13 +218,13 @@
     const {
       App, Button, ConfigProvider, DatePicker, Descriptions, Drawer, Dropdown, Form, Image,
       Input, InputNumber, Layout, Menu, Modal, Popconfirm, Radio, Select, Space, Switch,
-      Table, Tabs, Tag, Tooltip, Typography, Upload, message
+      Table, Tabs, Tag, TimePicker, Tooltip, Tree, Typography, Upload, message
     } = antd;
     const {
       BookOutlined, CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, DownloadOutlined,
       EditOutlined, EyeOutlined, GiftOutlined, IdcardOutlined, LogoutOutlined, MenuFoldOutlined,
-      MessageOutlined, MoreOutlined, PlusOutlined, ProfileOutlined, ReloadOutlined, RobotOutlined,
-      SearchOutlined, ShoppingCartOutlined, StopOutlined, TeamOutlined, UploadOutlined, UserOutlined
+      MessageOutlined, MoreOutlined, PlusOutlined, ProfileOutlined, ReloadOutlined,
+      SearchOutlined, ShopOutlined, ShoppingCartOutlined, StopOutlined, TeamOutlined, UploadOutlined, UserOutlined
     } = icons;
     const { Header, Sider, Content } = Layout;
     const { RangePicker } = DatePicker;
@@ -243,13 +243,13 @@
         { key: "pointsOrder", label: "积分兑换订单" }
       ]},
       { key: "points", icon: <GiftOutlined />, label: "积分兑换", children: [
-        { key: "exchangeConfig", label: "配置积分可兑换商品 / 权益" }
+        { key: "exchangeConfig", label: "积分兑换配置" }
       ]},
       { key: "card", icon: <IdcardOutlined />, label: "特惠卡", children: [
-        { key: "packageConfig", label: "套餐配置" }
+        { key: "packageConfig", label: "特惠卡配置" }
       ]},
-      { key: "robot", icon: <RobotOutlined />, label: "机器人", children: [
-        { key: "robotTask", label: "任务列表" }
+      { key: "shop", icon: <ShopOutlined />, label: "店铺管理", children: [
+        { key: "storeList", label: "店铺列表" }
       ]},
       { key: "feedback", icon: <MessageOutlined />, label: "意见反馈", children: [
         { key: "feedbackList", label: "反馈列表" }
@@ -265,8 +265,9 @@
       deliveryOrder: ["订单中心", "配送订单", "/order/delivery-order", "查看用户在小程序提交的机器人配送订单。"],
       cardOrder: ["订单中心", "特惠卡订单", "/order/card-order", "查看用户购买月卡、周卡、权益卡等特惠卡的订单。"],
       pointsOrder: ["订单中心", "积分兑换订单", "/order/points-exchange-order", "查看用户使用积分兑换商品或权益的订单。"],
-      exchangeConfig: ["积分兑换", "配置积分可兑换商品 / 权益", "/points/exchange-config", "配置小程序中可用积分兑换的商品或权益。"],
-      packageConfig: ["特惠卡", "套餐配置", "/card/package-config", "配置小程序中售卖的月卡、周卡、权益卡等套餐。"],
+      exchangeConfig: ["积分兑换", "积分兑换配置", "/points/exchange-config", "配置小程序中可用积分兑换的商品或权益。"],
+      packageConfig: ["特惠卡", "特惠卡配置", "/card/package-config", "配置小程序中售卖的月卡、周卡、权益卡等套餐。"],
+      storeList: ["店铺管理", "店铺列表", "/shop/store-list", "维护店铺基础信息、楼层铺位和营业时间配置。"],
       robotTask: ["机器人", "任务列表", "/robot/task-list", "查看机器人配送任务执行情况和异常处理结果。"],
       feedbackList: ["意见反馈", "反馈列表", "/feedback/list", "查看并处理用户在小程序提交的意见反馈。"],
       userList: ["用户管理", "用户列表", "/user/list", "查看小程序注册用户信息、权益信息和状态。"]
@@ -323,9 +324,13 @@
       user: ["正常", "禁用"],
       productType: ["权益", "实物", "优惠券"],
       itemType: ["实物", "权益", "次数"],
+      floor: ["L1", "L2", "L3", "L4", "L5"],
       payMethod: ["微信支付", "特惠卡支付"],
-      cardPay: ["待支付", "已支付", "已取消"],
+      cardPay: ["待支付", "已支付", "已取消", "已过期"],
       cardUse: ["使用中", "已用完", "已到期", "未启用"],
+      cardOperationType: ["补发次数"],
+      exchangeOperationType: ["编辑", "上架", "下架", "新增"],
+      packageOperationType: ["编辑", "上架", "下架", "新增"],
       pointsUse: ["已使用", "未使用"],
       robotTask: ["执行中", "已完成", "异常", "已取消"]
     };
@@ -336,32 +341,33 @@
       const disabledDeliveryStatuses = ["待取件", "配送中", "已完成", "已取消"];
       return disabledPayStatuses.includes(record?.payStatus) || disabledDeliveryStatuses.includes(record?.deliveryStatus);
     };
+    const isCardCompensateDisabled = (record) => ["已取消", "已过期"].includes(record?.payStatus);
 
     const mock = {
       agreement: [
-        { id: "AG-USE-001", type: "使用协议", version: "v1.0", effectiveRange: "2026-01-01 00:00 ~ 2026-03-31 23:59", status: "停用", content: "<p>用户使用协议历史版本 v1.0，主要说明账号注册、服务使用、订单规则等基础内容。</p>" },
-        { id: "AG-USE-002", type: "使用协议", version: "v1.1", effectiveRange: "2026-04-01 00:00 ~ 2026-05-19 23:59", status: "停用", content: "<p>用户使用协议历史版本 v1.1，补充了机器人配送、权益使用和异常处理相关说明。</p>" },
-        { id: "AG-USE-003", type: "使用协议", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>用户使用协议当前版本 v1.2</strong>，明确用户在智慧商贸小程序中使用订单、配送、积分、特惠卡等服务的权利义务。</p>" },
-        { id: "AG-SVC-001", type: "服务须知", version: "v1.0", effectiveRange: "2026-01-01 00:00 ~ 2026-03-31 23:59", status: "停用", content: "<p>服务须知历史版本 v1.0，说明机器人配送服务范围、取件提醒和基础异常反馈入口。</p>" },
-        { id: "AG-SVC-002", type: "服务须知", version: "v1.1", effectiveRange: "2026-04-01 00:00 ~ 2026-05-19 23:59", status: "停用", content: "<p>服务须知历史版本 v1.1，补充机器人到达提醒、舱门异常、配送超时等处理规则。</p>" },
-        { id: "AG-SVC-003", type: "服务须知", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>服务须知当前版本 v1.2</strong>，请用户在机器人到达后及时取件，若遇到路线异常或舱门无法打开，可提交反馈并等待人工处理。</p>" },
-        { id: "AG-BUY-001", type: "购买须知", version: "v1.0", effectiveRange: "2026-01-01 00:00 ~ 2026-03-31 23:59", status: "停用", content: "<p>购买须知历史版本 v1.0，说明月卡、周卡购买成功后的权益发放和基础使用规则。</p>" },
-        { id: "AG-BUY-002", type: "购买须知", version: "v1.1", effectiveRange: "2026-04-01 00:00 ~ 2026-05-19 23:59", status: "停用", content: "<p>购买须知历史版本 v1.1，明确周卡与月卡可以同时购买，但不能叠加使用。</p>" },
-        { id: "AG-BUY-003", type: "购买须知", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>购买须知当前版本 v1.2</strong>，特惠卡购买后按购买顺序生效，已购买特惠卡暂不支持退卡。</p>" },
-        { id: "AG-POINT-001", type: "积分兑换须知", version: "v1.0", effectiveRange: "2026-01-01 00:00 ~ 2026-03-31 23:59", status: "停用", content: "<p>积分兑换须知历史版本 v1.0，说明积分可兑换配送权益，兑换成功后生成权益记录。</p>" },
-        { id: "AG-POINT-002", type: "积分兑换须知", version: "v1.1", effectiveRange: "2026-04-01 00:00 ~ 2026-05-19 23:59", status: "停用", content: "<p>积分兑换须知历史版本 v1.1，补充兑换失败后的积分返还和权益补发规则。</p>" },
-        { id: "AG-POINT-003", type: "积分兑换须知", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>积分兑换须知当前版本 v1.2</strong>，积分兑换权益有效期暂定 30 天，兑换后请在有效期内使用。</p>" },
-        { id: "AG-GUIDE-001", type: "操作指南", version: "v1.0", effectiveRange: "2026-01-01 00:00 ~ 2026-03-31 23:59", status: "停用", content: "<p>操作指南历史版本 v1.0，包含下单、选择取件点和送达点、等待机器人接单等基础步骤。</p>" },
-        { id: "AG-GUIDE-002", type: "操作指南", version: "v1.1", effectiveRange: "2026-04-01 00:00 ~ 2026-05-19 23:59", status: "停用", content: "<p>操作指南历史版本 v1.1，补充输入取件码、开舱取件和异常反馈的操作说明。</p>" },
-        { id: "AG-GUIDE-003", type: "操作指南", version: "v1.2", effectiveRange: "2026-05-20 00:00 ~ 2026-12-31 23:59", status: "启用", content: "<p><strong>操作指南当前版本 v1.2</strong>，包含机器人取件、输入取件码、异常反馈、客服处理等完整步骤说明。</p>" }
+        { id: "AG-USE-001", type: "使用协议", version: "v1.0", createdAt: "2026-01-01 09:00", status: "停用", content: "<p>用户使用协议历史版本 v1.0，主要说明账号注册、服务使用、订单规则等基础内容。</p>" },
+        { id: "AG-USE-002", type: "使用协议", version: "v1.1", createdAt: "2026-04-01 09:30", status: "停用", content: "<p>用户使用协议历史版本 v1.1，补充了机器人配送、权益使用和异常处理相关说明。</p>" },
+        { id: "AG-USE-003", type: "使用协议", version: "v1.2", createdAt: "2026-05-20 10:00", status: "启用", content: "<p><strong>用户使用协议当前版本 v1.2</strong>，明确用户在智慧商贸小程序中使用订单、配送、积分、特惠卡等服务的权利义务。</p>" },
+        { id: "AG-SVC-001", type: "服务须知", version: "v1.0", createdAt: "2026-01-01 09:10", status: "停用", content: "<p>服务须知历史版本 v1.0，说明机器人配送服务范围、取件提醒和基础异常反馈入口。</p>" },
+        { id: "AG-SVC-002", type: "服务须知", version: "v1.1", createdAt: "2026-04-01 09:40", status: "停用", content: "<p>服务须知历史版本 v1.1，补充机器人到达提醒、舱门异常、配送超时等处理规则。</p>" },
+        { id: "AG-SVC-003", type: "服务须知", version: "v1.2", createdAt: "2026-05-20 10:10", status: "启用", content: "<p><strong>服务须知当前版本 v1.2</strong>，请用户在机器人到达后及时取件，若遇到路线异常或舱门无法打开，可提交反馈并等待人工处理。</p>" },
+        { id: "AG-BUY-001", type: "购买须知", version: "v1.0", createdAt: "2026-01-01 09:20", status: "停用", content: "<p>购买须知历史版本 v1.0，说明月卡、周卡购买成功后的权益发放和基础使用规则。</p>" },
+        { id: "AG-BUY-002", type: "购买须知", version: "v1.1", createdAt: "2026-04-01 09:50", status: "停用", content: "<p>购买须知历史版本 v1.1，明确周卡与月卡可以同时购买，但不能叠加使用。</p>" },
+        { id: "AG-BUY-003", type: "购买须知", version: "v1.2", createdAt: "2026-05-20 10:20", status: "启用", content: "<p><strong>购买须知当前版本 v1.2</strong>，特惠卡购买后按购买顺序生效，已购买特惠卡暂不支持退卡。</p>" },
+        { id: "AG-POINT-001", type: "积分兑换须知", version: "v1.0", createdAt: "2026-01-01 09:30", status: "停用", content: "<p>积分兑换须知历史版本 v1.0，说明积分可兑换配送权益，兑换成功后生成权益记录。</p>" },
+        { id: "AG-POINT-002", type: "积分兑换须知", version: "v1.1", createdAt: "2026-04-01 10:00", status: "停用", content: "<p>积分兑换须知历史版本 v1.1，补充兑换失败后的积分返还和权益补发规则。</p>" },
+        { id: "AG-POINT-003", type: "积分兑换须知", version: "v1.2", createdAt: "2026-05-20 10:30", status: "启用", content: "<p><strong>积分兑换须知当前版本 v1.2</strong>，积分兑换权益有效期暂定 30 天，兑换后请在有效期内使用。</p>" },
+        { id: "AG-GUIDE-001", type: "操作指南", version: "v1.0", createdAt: "2026-01-01 09:40", status: "停用", content: "<p>操作指南历史版本 v1.0，包含下单、选择取件点和送达点、等待机器人接单等基础步骤。</p>" },
+        { id: "AG-GUIDE-002", type: "操作指南", version: "v1.1", createdAt: "2026-04-01 10:10", status: "停用", content: "<p>操作指南历史版本 v1.1，补充输入取件码、开舱取件和异常反馈的操作说明。</p>" },
+        { id: "AG-GUIDE-003", type: "操作指南", version: "v1.2", createdAt: "2026-05-20 10:40", status: "启用", content: "<p><strong>操作指南当前版本 v1.2</strong>，包含机器人取件、输入取件码、异常反馈、客服处理等完整步骤说明。</p>" }
       ],
       agreementConsent: [
         { id: "AC-USE-001", nickname: "张三", phone: "13812345678", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 10:12", content: "用户当时同意的使用协议 v1.2 正文快照。" },
         { id: "AC-USE-002", nickname: "李四", phone: "13987654321", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 11:35", content: "用户当时同意的使用协议 v1.2 正文快照。" },
-        { id: "AC-USE-003", nickname: "王五", phone: "13666668888", type: "使用协议", title: "用户使用协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的使用协议 v1.1 正文快照。" },
+        { id: "AC-USE-003", nickname: "", phone: "13666668888", type: "使用协议", title: "用户使用协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的使用协议 v1.1 正文快照。" },
         { id: "AC-USE-004", nickname: "赵六", phone: "13511112222", type: "使用协议", title: "用户使用协议", version: "v1.0", agreedAt: "2026-02-08 14:40", content: "用户当时同意的使用协议 v1.0 正文快照。" },
         { id: "AC-SVC-001", nickname: "陈七", phone: "13722223333", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 12:20", content: "用户当时同意的服务须知 v1.2 正文快照。" },
-        { id: "AC-SVC-002", nickname: "孙八", phone: "13233334444", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的服务须知 v1.2 正文快照。" },
+        { id: "AC-SVC-002", nickname: "", phone: "13233334444", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的服务须知 v1.2 正文快照。" },
         { id: "AC-SVC-003", nickname: "周九", phone: "13155556666", type: "服务须知", title: "机器人配送服务须知", version: "v1.1", agreedAt: "2026-04-28 16:10", content: "用户当时同意的服务须知 v1.1 正文快照。" },
         { id: "AC-SVC-004", nickname: "吴十", phone: "13377778888", type: "服务须知", title: "机器人配送服务须知", version: "v1.0", agreedAt: "2026-03-12 10:02", content: "用户当时同意的服务须知 v1.0 正文快照。" },
         { id: "AC-BUY-001", nickname: "郑一", phone: "13488889999", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的购买须知 v1.2 正文快照。" },
@@ -405,6 +411,12 @@
         { id: "CO-20260428007", orderNo: "CO20260428007", user: "郑一", phone: "13488889999", cardName: "送餐取物月卡", cardType: "月卡", amount: "49.90", payMethod: "微信支付", payStatus: "已支付", totalTimes: 20, usedTimes: 8, remainTimes: 12, startAt: "2026-04-28", expireAt: "2026-05-27", useStatus: "使用中", createdAt: "2026-04-28 15:50", paidAt: "2026-04-28 15:51", records: ["用户购买月卡", "权益使用中"] },
         { id: "CO-20260425008", orderNo: "CO20260425008", user: "冯二", phone: "13799990000", cardName: "送餐取物周卡", cardType: "周卡", amount: "19.90", payMethod: "微信支付", payStatus: "已取消", totalTimes: 6, usedTimes: 0, remainTimes: 6, startAt: "-", expireAt: "-", useStatus: "未启用", createdAt: "2026-04-25 09:30", paidAt: "-", records: ["用户创建周卡订单", "订单已取消"] }
       ],
+      cardOrderLog: [
+        { id: "COL-20260520001", orderNo: "CO20260519001", admin: "运营管理员A", operationType: "补发次数", operatedAt: "2026-05-20 11:26" },
+        { id: "COL-20260519001", orderNo: "CO20260519003", admin: "客服主管B", operationType: "补发次数", operatedAt: "2026-05-19 16:40" },
+        { id: "COL-20260518001", orderNo: "CO20260520004", admin: "客服专员C", operationType: "补发次数", operatedAt: "2026-05-18 14:08" },
+        { id: "COL-20260517001", orderNo: "CO20260428007", admin: "运营管理员D", operationType: "补发次数", operatedAt: "2026-05-17 09:32" }
+      ],
       pointsOrder: [
         { id: "PE-20260519001", exchangeNo: "PE20260519001", user: "张三", phone: "13812345678", productName: "配送权益 1 次", productType: "权益", points: 300, quantity: 1, useStatus: "未使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-19 18:12", grantType: "配送权益次数", grantQuantity: 1, grantAt: "2026-05-19 18:12", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
         { id: "PE-20260518004", exchangeNo: "PE20260518004", user: "李四", phone: "13987654321", productName: "配送权益 2 次", productType: "权益", points: 500, quantity: 1, useStatus: "已使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-18 13:24", grantType: "配送权益次数", grantQuantity: 2, grantAt: "2026-05-18 13:25", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
@@ -422,9 +434,33 @@
         { id: "PR-004", productId: "PR004", name: "配送权益 4 次", type: "权益", points: 900, benefitTimes: 4, stock: 120, status: "下架", validRange: "2026-06-01 ~ 2026-12-31", createdAt: "2026-05-04 14:20", sort: 4, imageUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=320&q=80", desc: "兑换后获得 4 次机器人配送权益，下架期间小程序不展示。" },
         { id: "PR-005", productId: "PR005", name: "配送权益 5 次", type: "权益", points: 1100, benefitTimes: 5, stock: 80, status: "上架", validRange: "2026-06-01 ~ 2026-12-31", createdAt: "2026-05-05 16:45", sort: 5, imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=320&q=80", desc: "兑换后获得 5 次机器人配送权益，适合高频使用用户。" }
       ],
+      exchangeConfigLog: [
+        { id: "ECL-20260520001", productId: "PR001", admin: "运营管理员A", operationType: "编辑", operatedAt: "2026-05-20 09:18" },
+        { id: "ECL-20260519001", productId: "PR004", admin: "运营管理员B", operationType: "上架", operatedAt: "2026-05-19 15:42" },
+        { id: "ECL-20260518001", productId: "PR002", admin: "商品管理员C", operationType: "下架", operatedAt: "2026-05-18 17:06" },
+        { id: "ECL-20260517001", productId: "PR005", admin: "商品管理员D", operationType: "新增", operatedAt: "2026-05-17 10:24" }
+      ],
       packageConfig: [
         { id: "PK-001", cardId: "PK001", name: "送餐取物月卡", type: "月卡", price: "49.90", times: 20, valid: "30 天", validDays: 30, status: "上架", sort: 1, createdAt: "2026-05-01 10:00", desc: "适用于机器人取餐送物服务。" },
         { id: "PK-002", cardId: "PK002", name: "送餐取物周卡", type: "周卡", price: "19.90", times: 6, valid: "7 天", validDays: 7, status: "上架", sort: 2, createdAt: "2026-05-01 10:30", desc: "适合短期使用。" }
+      ],
+      packageConfigLog: [
+        { id: "PCL-20260520001", cardId: "PK001", admin: "运营管理员A", operationType: "编辑", operatedAt: "2026-05-20 10:12" },
+        { id: "PCL-20260519001", cardId: "PK002", admin: "运营管理员B", operationType: "上架", operatedAt: "2026-05-19 15:30" },
+        { id: "PCL-20260518001", cardId: "PK001", admin: "客服主管C", operationType: "下架", operatedAt: "2026-05-18 16:08" },
+        { id: "PCL-20260517001", cardId: "PK002", admin: "商品管理员D", operationType: "新增", operatedAt: "2026-05-17 09:45" }
+      ],
+      storeList: [
+        { id: "ST-001", storeId: "S-L1-001", storeName: "星巴克", floor: "L1", berthNo: "L1-101", businessHours: "08:00 - 22:00", startTime: "08:00", endTime: "22:00", overnight: false },
+        { id: "ST-002", storeId: "S-L1-002", storeName: "瑞幸咖啡", floor: "L1", berthNo: "L1-108", businessHours: "07:30 - 21:30", startTime: "07:30", endTime: "21:30", overnight: false },
+        { id: "ST-003", storeId: "S-L2-001", storeName: "麦当劳", floor: "L2", berthNo: "L2-206", businessHours: "08:00 - 次日 02:00", startTime: "08:00", endTime: "02:00", overnight: true },
+        { id: "ST-004", storeId: "S-L2-002", storeName: "肯德基", floor: "L2", berthNo: "L2-211", businessHours: "09:00 - 23:00", startTime: "09:00", endTime: "23:00", overnight: false },
+        { id: "ST-005", storeId: "S-L3-001", storeName: "喜茶", floor: "L3", berthNo: "L3-305", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
+        { id: "ST-006", storeId: "S-L3-002", storeName: "奈雪的茶", floor: "L3", berthNo: "L3-309", businessHours: "10:00 - 22:30", startTime: "10:00", endTime: "22:30", overnight: false },
+        { id: "ST-007", storeId: "S-L4-001", storeName: "海底捞", floor: "L4", berthNo: "L4-401", businessHours: "10:00 - 次日 03:00", startTime: "10:00", endTime: "03:00", overnight: true },
+        { id: "ST-008", storeId: "S-L4-002", storeName: "八合里", floor: "L4", berthNo: "L4-408", businessHours: "11:00 - 23:30", startTime: "11:00", endTime: "23:30", overnight: false },
+        { id: "ST-009", storeId: "S-L5-001", storeName: "优衣库", floor: "L5", berthNo: "L5-502", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
+        { id: "ST-010", storeId: "S-L5-002", storeName: "影院前台", floor: "L5", berthNo: "L5-518", businessHours: "09:30 - 次日 01:30", startTime: "09:30", endTime: "01:30", overnight: true }
       ],
       robotTask: [
         { id: "RT-20260520001", taskNo: "RT20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", robotNo: "RB-08", pickup: "星巴克", delivery: "服务台", status: "执行中", createdAt: "2026-05-20 10:24", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-", abnormal: "否", handleStatus: "-", handleResult: "-", refundComp: "-" },
@@ -441,10 +477,10 @@
       feedbackList: [
         { id: "FB-001", feedbackId: "FB001", user: "张三", openid: "oWX8x***9kl", phone: "13812345678", contact: "13812345678", content: "机器人到达后没有电话提醒，希望可以增加小程序消息和电话提醒。", image: "2 张", images: ["https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=320&q=80", "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-20 11:20", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-002", feedbackId: "FB002", user: "李四", openid: "oWX9b***7pq", phone: "13987654321", contact: "13987654321", content: "积分兑换后权益没有立即到账。", image: "1 张", images: ["https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&w=320&q=80"], status: "处理中", submittedAt: "2026-05-19 16:08", remark: "已联系技术排查", handler: "客服A", handledAt: "2026-05-19 16:30" },
-        { id: "FB-003", feedbackId: "FB003", user: "王五", openid: "oWX3p***8Mn", phone: "13666668888", contact: "13666668888", content: "输入取件码后机器人舱门没有打开，希望尽快处理。", image: "1 张", images: ["https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-20 12:42", remark: "-", handler: "-", handledAt: "-" },
+        { id: "FB-003", feedbackId: "FB003", user: "", openid: "oWX3p***8Mn", phone: "13666668888", contact: "13666668888", content: "输入取件码后机器人舱门没有打开，希望尽快处理。", image: "1 张", images: ["https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-20 12:42", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-004", feedbackId: "FB004", user: "赵六", openid: "oWX4q***6De", phone: "13511112222", contact: "13511112222", content: "机器人配送超时，订单显示配送中但很久没有更新。", image: "0 张", images: [], status: "待处理", submittedAt: "2026-05-20 13:10", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-005", feedbackId: "FB005", user: "陈七", openid: "oWX5r***1Fg", phone: "13722223333", contact: "13722223333", content: "特惠卡权益次数未到账，支付成功后剩余次数没有变化。", image: "1 张", images: ["https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=320&q=80"], status: "处理中", submittedAt: "2026-05-20 14:22", remark: "-", handler: "-", handledAt: "-" },
-        { id: "FB-006", feedbackId: "FB006", user: "孙八", openid: "oWX6s***3Hi", phone: "13233334444", contact: "13233334444", content: "退款后权益未退回，原订单已经退款但特惠卡次数没有恢复。", image: "2 张", images: ["https://images.unsplash.com/photo-1556740714-a8395b3bf30f?auto=format&fit=crop&w=320&q=80", "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-19 18:16", remark: "-", handler: "-", handledAt: "-" },
+        { id: "FB-006", feedbackId: "FB006", user: "", openid: "oWX6s***3Hi", phone: "13233334444", contact: "13233334444", content: "退款后权益未退回，原订单已经退款但特惠卡次数没有恢复。", image: "2 张", images: ["https://images.unsplash.com/photo-1556740714-a8395b3bf30f?auto=format&fit=crop&w=320&q=80", "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-19 18:16", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-007", feedbackId: "FB007", user: "周九", openid: "oWX7t***5Jk", phone: "13155556666", contact: "13155556666", content: "页面显示异常，积分兑换页面按钮被遮挡。", image: "1 张", images: ["https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=320&q=80"], status: "已处理", submittedAt: "2026-05-18 09:52", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-008", feedbackId: "FB008", user: "吴十", openid: "oWX8u***7Lm", phone: "13377778888", contact: "13377778888", content: "图片上传失败，反馈提交时提示网络异常。", image: "0 张", images: [], status: "处理中", submittedAt: "2026-05-17 20:30", remark: "-", handler: "-", handledAt: "-" },
         { id: "FB-009", feedbackId: "FB009", user: "郑一", openid: "oWX9v***9No", phone: "13488889999", contact: "13488889999", content: "机器人找不到送达点，停在电梯口后没有继续前往店铺。", image: "3 张", images: ["https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=320&q=80", "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=320&q=80", "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=320&q=80"], status: "待处理", submittedAt: "2026-05-16 15:18", remark: "-", handler: "-", handledAt: "-" }
@@ -452,10 +488,10 @@
       userList: [
         { id: "U-001", userId: "U001", openid: "oWX8x***9kl", fullOpenid: "oWX8x7aB9cD2eF3gH4iJ5kL6mN", nickname: "张三", phone: "13812345678", registeredAt: "2026-04-18 09:20", lastLoginAt: "2026-05-20 10:00", status: "正常", points: 1880, deliveryRights: 16, cardCount: 2, exchangeCount: 4 },
         { id: "U-002", userId: "U002", openid: "oWX9b***7pq", fullOpenid: "oWX9bA1cD2eF3gH4iJ5kL6mN7p", nickname: "李四", phone: "13987654321", registeredAt: "2026-04-20 13:45", lastLoginAt: "2026-05-19 21:12", status: "禁用", points: 320, deliveryRights: 0, cardCount: 0, exchangeCount: 1 },
-        { id: "U-003", userId: "U003", openid: "oWX3p***8Mn", fullOpenid: "oWX3pQ7rS8tU9vW1xY2zA3bC4", nickname: "王五", phone: "13666668888", registeredAt: "2026-04-25 15:32", lastLoginAt: "2026-05-20 12:18", status: "正常", points: 920, deliveryRights: 3, cardCount: 1, exchangeCount: 2 },
+        { id: "U-003", userId: "U003", openid: "oWX3p***8Mn", fullOpenid: "oWX3pQ7rS8tU9vW1xY2zA3bC4", nickname: "", phone: "13666668888", registeredAt: "2026-04-25 15:32", lastLoginAt: "2026-05-20 12:18", status: "正常", points: 920, deliveryRights: 3, cardCount: 1, exchangeCount: 2 },
         { id: "U-004", userId: "U004", openid: "oWX4q***6De", fullOpenid: "oWX4qR8sT9uV1wX2yZ3aB4cD5", nickname: "赵六", phone: "13511112222", registeredAt: "2026-04-28 10:12", lastLoginAt: "2026-05-20 13:04", status: "正常", points: 450, deliveryRights: 5, cardCount: 1, exchangeCount: 1 },
         { id: "U-005", userId: "U005", openid: "oWX5r***1Fg", fullOpenid: "oWX5rS9tU1vW2xY3zA4bC5dE6", nickname: "陈七", phone: "13722223333", registeredAt: "2026-05-01 08:40", lastLoginAt: "2026-05-20 14:21", status: "正常", points: 2350, deliveryRights: 20, cardCount: 3, exchangeCount: 6 },
-        { id: "U-006", userId: "U006", openid: "oWX6s***3Hi", fullOpenid: "oWX6sT1uV2wX3yZ4aB5cD6eF7", nickname: "孙八", phone: "13233334444", registeredAt: "2026-05-03 17:26", lastLoginAt: "2026-05-19 18:16", status: "禁用", points: 120, deliveryRights: 0, cardCount: 0, exchangeCount: 0 },
+        { id: "U-006", userId: "U006", openid: "oWX6s***3Hi", fullOpenid: "oWX6sT1uV2wX3yZ4aB5cD6eF7", nickname: "", phone: "13233334444", registeredAt: "2026-05-03 17:26", lastLoginAt: "2026-05-19 18:16", status: "禁用", points: 120, deliveryRights: 0, cardCount: 0, exchangeCount: 0 },
         { id: "U-007", userId: "U007", openid: "oWX7t***5Jk", fullOpenid: "oWX7tU2vW3xY4zA5bC6dE7fG8", nickname: "周九", phone: "13155556666", registeredAt: "2026-05-05 11:06", lastLoginAt: "2026-05-18 09:52", status: "正常", points: 760, deliveryRights: 2, cardCount: 1, exchangeCount: 3 },
         { id: "U-008", userId: "U008", openid: "oWX8u***7Lm", fullOpenid: "oWX8uV3wX4yZ5aB6cD7eF8gH9", nickname: "吴十", phone: "13377778888", registeredAt: "2026-05-06 16:48", lastLoginAt: "2026-05-17 20:30", status: "正常", points: 1510, deliveryRights: 8, cardCount: 2, exchangeCount: 5 },
         { id: "U-009", userId: "U009", openid: "oWX9v***9No", fullOpenid: "oWX9vW4xY5zA6bC7dE8fG9hI1", nickname: "郑一", phone: "13488889999", registeredAt: "2026-05-08 09:15", lastLoginAt: "2026-05-16 15:18", status: "正常", points: 640, deliveryRights: 1, cardCount: 1, exchangeCount: 2 },
@@ -468,41 +504,50 @@
     });
 
     const pageFilters = {
-      agreement: [["状态", "status", "select", options.enabled], ["生效时间", "effectiveAt", "range"]],
-      agreementConsent: [["微信OpenID", "openid", "input"], ["昵称", "nickname", "input"], ["手机号", "phone", "input"], ["版本号", "version", "input"]],
+      agreement: [["状态", "status", "select", options.enabled], ["创建时间区间", "createdAt", "range"]],
+      agreementConsent: [["手机号", "phone", "input"], ["版本号", "version", "input"], ["同意时间区间", "agreedAt", "range"]],
       deliveryOrder: [["订单号", "orderNo", "input"], ["昵称", "user", "input"], ["手机号", "phone", "input"], ["收件点", "pickup", "input"], ["送达点", "delivery", "input"], ["机器人编号", "robotNo", "input"], ["支付方式", "payMethod", "select", options.payMethod], ["支付状态", "payStatus", "select", options.pay], ["配送状态", "deliveryStatus", "select", options.delivery], ["创建时间", "createdAt", "range"]],
       deliveryOrderLog: [["订单号", "orderNo", "input"], ["管理员", "admin", "input"], ["退款类型", "refundType", "select", options.refundType], ["时间区间", "operatedAt", "range"]],
       cardOrder: [["订单号", "orderNo", "input"], ["用户", "user", "input"], ["手机号", "phone", "input"], ["卡类型", "cardType", "select", options.cardType], ["支付状态", "payStatus", "select", options.cardPay], ["使用状态", "useStatus", "select", options.cardUse], ["下单时间", "createdAt", "range"]],
+      cardOrderLog: [["订单号", "orderNo", "input"], ["管理员", "admin", "input"], ["操作类型", "operationType", "select", options.cardOperationType], ["时间区间", "operatedAt", "range"]],
       pointsOrder: [["兑换单号", "exchangeNo", "input"], ["用户", "user", "input"], ["商品", "productName", "input"], ["使用状态", "useStatus", "select", options.pointsUse], ["兑换时间", "exchangeAt", "range"]],
       exchangeConfig: [["商品名称", "name", "input"], ["商品ID", "productId", "input"], ["状态", "status", "select", options.shelf], ["有效期", "validRange", "range"]],
+      exchangeConfigLog: [["商品ID", "productId", "input"], ["管理员", "admin", "input"], ["操作类型", "operationType", "select", options.exchangeOperationType], ["时间区间", "operatedAt", "range"]],
       packageConfig: [["卡ID", "cardId", "input"], ["卡类型", "type", "select", options.cardType], ["状态", "status", "select", options.shelf], ["有效期", "valid", "range"]],
+      packageConfigLog: [["卡ID", "cardId", "input"], ["管理员", "admin", "input"], ["操作类型", "operationType", "select", options.packageOperationType], ["时间区间", "operatedAt", "range"]],
+      storeList: [["店铺名称", "storeName", "input"], ["店铺ID", "storeId", "input"], ["楼层", "floor", "select", options.floor]],
       robotTask: [["任务号", "taskNo", "input"], ["订单号", "orderNo", "input"], ["机器人编号", "robotNo", "input"], ["取件点", "pickup", "input"], ["送达点", "delivery", "input"], ["任务状态", "status", "select", options.robotTask], ["创建时间", "createdAt", "range"]],
-      feedbackList: [["反馈ID", "feedbackId", "input"], ["用户", "user", "input"], ["手机号", "phone", "input"], ["联系方式", "contact", "input"], ["提交时间", "submittedAt", "range"]],
-      userList: [["微信OpenID", "openid", "input"], ["昵称", "nickname", "input"], ["手机号", "phone", "input"], ["注册时间", "registeredAt", "range"], ["最近登录时间", "lastLoginAt", "range"]]
+      feedbackList: [["手机号", "phone", "input"], ["提交时间", "submittedAt", "range"]],
+      userList: [["手机号", "phone", "input"], ["注册时间", "registeredAt", "range"], ["最近登录时间", "lastLoginAt", "range"]]
     };
 
     const columns = {
-      agreement: [["版本号","version"],["协议内容","content","richPreview"],["生效时间区间","effectiveRange"],["状态","status","tag"]],
-      agreementConsent: [["微信OpenID","openid","openidTooltip"],["昵称","nickname"],["手机号","phone"],["版本号","version"]],
+      agreement: [["版本号","version"],["协议内容","content","richPreview"],["创建时间","createdAt"],["状态","status","tag"]],
+      agreementConsent: [["昵称","nickname"],["手机号","phone"],["版本号","version"],["同意时间","agreedAt"]],
       deliveryOrder: [["订单号","orderNo"],["昵称","user"],["手机号","phone","phone"],["收件点","pickup"],["送达点","delivery"],["机器人编号","robotNo"],["金额/权益","amountBenefit"],["支付方式","payMethod"],["支付状态","payStatus","tag"],["配送状态","deliveryStatus","tag"],["创建时间","createdAt"]],
       deliveryOrderLog: [["订单号","orderNo"],["管理员","admin"],["退款类型","refundType"],["操作时间","operatedAt"]],
       cardOrder: [["订单号","orderNo"],["用户","user"],["手机号","phone","phone"],["卡类型","cardType"],["金额","amount","money"],["支付状态","payStatus","tag"],["剩余次数","remainTimes"],["到期时间","expireAt"],["下单时间","createdAt"],["支付时间","paidAt"]],
+      cardOrderLog: [["订单号","orderNo"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
       pointsOrder: [["兑换单号","exchangeNo"],["用户","user"],["商品","productName"],["消耗积分","points"],["数量","quantity"],["使用状态","useStatus","tag"],["兑换时间","exchangeAt"]],
       exchangeConfig: [["商品ID","productId"],["名称","name"],["图片","imageUrl","singlePreviewImage"],["所需积分","points"],["兑换权益次数","benefitTimes"],["库存","stock"],["上下架状态","status","tag"],["有效期","validRange"],["创建时间","createdAt"]],
+      exchangeConfigLog: [["商品ID","productId"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
       packageConfig: [["卡ID","cardId"],["类型","type"],["售价","price","money"],["次数","times"],["有效天数","validDays"],["上下架状态","status","tag"],["排序","sort"],["创建时间","createdAt"]],
+      packageConfigLog: [["卡ID","cardId"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
+      storeList: [["店铺ID","storeId"],["店铺名称","storeName"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]],
       robotTask: [["任务号","taskNo"],["订单号","orderNo"],["机器人","robotNo"],["取件点","pickup"],["送达点","delivery"],["任务状态","status","tag"],["创建时间","createdAt"],["完成时间","finishAt"],["异常原因","exception"],["退款 / 补偿结果","refundComp"]],
-      feedbackList: [["微信OpenID","openid"],["昵称","user"],["内容","content","ellipsis"],["图片","images","previewImage"],["联系方式","contact"],["提交时间","submittedAt"]],
-      userList: [["微信OpenID","openid","openidTooltip"],["昵称","nickname"],["手机号","phone"],["注册时间","registeredAt"],["最近登录时间","lastLoginAt"]]
+      feedbackList: [["昵称","user"],["内容","content","ellipsis"],["图片","images","previewImage"],["手机号","contact"],["提交时间","submittedAt"]],
+      userList: [["昵称","nickname"],["手机号","phone"],["注册时间","registeredAt"],["最近登录时间","lastLoginAt"]]
     };
 
     const detailSections = {
-      agreement: [["协议信息", [["协议分类","type"],["版本号","version"],["生效时间区间","effectiveRange"],["状态","status"]]], ["协议内容", [["协议内容","content","rich"]]]],
+      agreement: [["协议信息", [["协议分类","type"],["版本号","version"],["创建时间","createdAt"],["状态","status"]]], ["协议内容", [["协议内容","content","rich"]]]],
       agreementConsent: [["用户同意信息", [["微信OpenID","openid"],["昵称","nickname"],["手机号","phone"],["协议标题","title"],["协议类型","type"],["版本号","version"],["同意时间","agreedAt"]]], ["当时协议正文", [["协议内容","content","rich"]]]],
       deliveryOrder: [["基本信息", [["订单号","orderNo"],["昵称","user"],["手机号","phone"],["取餐码","pickupCode"],["创建时间","createdAt"],["支付时间","paidAt"],["支付方式","payMethod"],["订单金额","amount"],["支付状态","payStatus"],["配送状态","deliveryStatus"]]], ["配送信息", [["收件点","pickup"],["送达点","delivery"],["机器人编号","robotNo"],["机器人当前楼层","floor"],["任务开始时间","startAt"],["任务完成时间","finishAt"],["异常原因","exception"]]]],
       cardOrder: [["基本信息", [["订单号","orderNo"],["用户","user"],["手机号","phone"],["卡名称","cardName"],["卡类型","cardType"],["金额","amount"],["支付方式","payMethod"],["支付状态","payStatus"],["下单时间","createdAt"],["支付时间","paidAt"]]], ["权益信息", [["总次数","totalTimes"],["已使用次数","usedTimes"],["剩余次数","remainTimes"],["生效时间","startAt"],["到期时间","expireAt"],["状态","useStatus"]]], ["操作记录", [["操作记录","records","list"]]]],
       pointsOrder: [["基本信息", [["兑换单号","exchangeNo"],["用户","user"],["手机号","phone"],["商品名称","productName"],["商品类型","productType"],["消耗积分","points"],["兑换数量","quantity"],["兑换状态","exchangeStatus"],["兑换时间","exchangeAt"]]], ["发放信息", [["权益类型","grantType"],["发放数量","grantQuantity"],["发放状态","grantStatus"],["发放时间","grantAt"],["失败原因","failReason"]]], ["积分处理信息", [["是否已扣积分","deducted"],["是否已返还积分","returned"],["返还时间","returnAt"],["返还原因","returnReason"]]]],
       exchangeConfig: [["商品 / 权益信息", [["商品ID","productId"],["名称","name"],["商品类型","type"],["所需积分","points"],["兑换权益次数","benefitTimes"],["库存","stock"],["状态","status"],["有效期","validRange"],["排序","sort"],["商品说明","desc"]]]],
       packageConfig: [["套餐信息", [["卡ID","cardId"],["名称","name"],["类型","type"],["售价","price"],["次数","times"],["有效期","valid"],["上下架状态","status"],["排序","sort"],["套餐说明","desc"]]]],
+      storeList: [["店铺信息", [["店铺ID","storeId"],["店铺名称","storeName"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]]]],
       robotTask: [["基本信息", [["任务号","taskNo"],["订单号","orderNo"],["用户","user"],["手机号","phone"],["机器人编号","robotNo"],["取件点","pickup"],["送达点","delivery"],["任务状态","status"],["创建时间","createdAt"],["开始时间","startAt"],["完成时间","finishAt"]]], ["异常信息", [["是否异常","abnormal"],["异常原因","exception"],["异常时间","createdAt"],["处理状态","handleStatus"],["处理结果","handleResult"],["处理备注","refundComp"]]]],
       feedbackList: [["反馈详情", [["反馈ID","feedbackId"],["用户","user"],["手机号","phone"],["联系方式","contact"],["反馈内容","content","rich"],["反馈图片","images","previewImage"],["提交时间","submittedAt"]]]],
       userList: [["基本信息", [["用户ID","userId"],["微信OpenID","openid"],["昵称","nickname"],["手机号","phone"],["注册时间","registeredAt"],["最近登录时间","lastLoginAt"],["状态","status"]]], ["权益信息", [["当前积分","points"],["可用配送权益次数","deliveryRights"],["已购买特惠卡数量","cardCount"],["已兑换商品数量","exchangeCount"]]], ["订单记录入口", [["快捷入口","links","links"]]]]
@@ -631,7 +676,7 @@
                   label={label}
                   name={name}
                   key={name}
-                  rules={[{ required: ["title","type","version","effectiveAt","content","status","name","points","stock","price","times"].includes(name), message: `请填写${label}` }]}
+                  rules={[{ required: ["title","type","version","content","status","name","points","stock","price","times"].includes(name), message: `请填写${label}` }]}
                   style={["textarea", "rich"].includes(type) ? { gridColumn: "1 / span 2" } : undefined}
                 >
                   {type === "input" && <Input placeholder={`请输入${label}`} />}
@@ -695,6 +740,138 @@
       );
     }
 
+    const toTimeValue = (time) => dayjs(`2026-01-01 ${time || "09:00"}`);
+    const formatBusinessHours = (range, overnight) => {
+      const [start, end] = range || [];
+      const startText = start ? start.format("HH:mm") : "09:00";
+      const endText = end ? end.format("HH:mm") : "22:00";
+      return {
+        startTime: startText,
+        endTime: endText,
+        overnight,
+        businessHours: `${startText} - ${overnight ? "次日 " : ""}${endText}`
+      };
+    };
+    const buildStoreTreeData = (stores) => options.floor.map(floor => ({
+      title: floor,
+      key: floor,
+      children: stores
+        .filter(store => store.floor === floor)
+        .map(store => ({ title: `${store.storeName}（${store.berthNo}）`, key: store.id }))
+    }));
+
+    function StoreBatchConfigModal({ open, stores, onCancel, onSave }) {
+      const [form] = Form.useForm();
+      const [checkedKeys, setCheckedKeys] = React.useState([]);
+      React.useEffect(() => {
+        if (open) {
+          form.setFieldsValue({ timeRange: [toTimeValue("09:00"), toTimeValue("22:00")], overnight: false });
+          setCheckedKeys([]);
+        }
+      }, [open]);
+      const selectedStoreIds = checkedKeys.filter(key => String(key).startsWith("ST-"));
+      const selectedStores = stores.filter(store => selectedStoreIds.includes(store.id));
+      return (
+        <Modal
+          title="批量配置营业时间"
+          open={open}
+          onCancel={onCancel}
+          onOk={() => form.validateFields().then(values => {
+            if (!selectedStoreIds.length) {
+              message.warning("请选择店铺");
+              return;
+            }
+            onSave(selectedStoreIds, formatBusinessHours(values.timeRange, values.overnight));
+          })}
+          okText="确认配置"
+          cancelText="取消"
+          width={880}
+          destroyOnClose
+        >
+          <Form form={form} layout="vertical">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 16 }}>
+              <Form.Item label="营业时间区间" name="timeRange" rules={[{ required: true, message: "请选择营业时间区间" }]}>
+                <TimePicker.RangePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
+              </Form.Item>
+              <Form.Item label="跨天营业" name="overnight" valuePropName="checked">
+                <Switch checkedChildren="次日结束" unCheckedChildren="当日结束" />
+              </Form.Item>
+            </div>
+            <Typography.Paragraph type="secondary" style={{ marginTop: -4 }}>
+              如 08:00 营业到次日 02:00，请选择 08:00 - 02:00，并开启“次日结束”。
+            </Typography.Paragraph>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 12, minHeight: 300 }}>
+                <Typography.Text strong>选择店铺</Typography.Text>
+                <Tree
+                  checkable
+                  defaultExpandAll
+                  checkedKeys={checkedKeys}
+                  onCheck={(keys) => setCheckedKeys(Array.isArray(keys) ? keys : keys.checked)}
+                  treeData={buildStoreTreeData(stores)}
+                  style={{ marginTop: 12 }}
+                />
+              </div>
+              <div style={{ border: "1px solid #E5E7EB", borderRadius: 8, padding: 12, minHeight: 300 }}>
+                <Typography.Text strong>已选择 {selectedStores.length} 家店铺</Typography.Text>
+                <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+                  {selectedStores.length ? selectedStores.map(store => (
+                    <Tag
+                      key={store.id}
+                      closable
+                      onClose={() => setCheckedKeys(checkedKeys.filter(key => key !== store.id))}
+                      style={{ width: "fit-content", marginInlineEnd: 0 }}
+                    >
+                      {store.floor} / {store.storeName}
+                    </Tag>
+                  )) : <Typography.Text type="secondary">请从左侧楼层中选择店铺</Typography.Text>}
+                </div>
+              </div>
+            </div>
+          </Form>
+        </Modal>
+      );
+    }
+
+    function StoreConfigModal({ open, record, onCancel, onSave }) {
+      const [form] = Form.useForm();
+      React.useEffect(() => {
+        if (open && record) {
+          form.setFieldsValue({
+            timeRange: [toTimeValue(record.startTime), toTimeValue(record.endTime)],
+            overnight: !!record.overnight
+          });
+        }
+      }, [open, record]);
+      return (
+        <Modal
+          title={`配置营业时间 - ${record?.storeName || ""}`}
+          open={open}
+          onCancel={onCancel}
+          onOk={() => form.validateFields().then(values => onSave([record.id], formatBusinessHours(values.timeRange, values.overnight)))}
+          okText="确认配置"
+          cancelText="取消"
+          destroyOnClose
+        >
+          <Form form={form} layout="vertical">
+            <Descriptions column={1} size="small" style={{ marginBottom: 16 }}>
+              <Descriptions.Item label="店铺ID">{record?.storeId}</Descriptions.Item>
+              <Descriptions.Item label="楼层 / 铺位号">{record?.floor} / {record?.berthNo}</Descriptions.Item>
+            </Descriptions>
+            <Form.Item label="营业时间区间" name="timeRange" rules={[{ required: true, message: "请选择营业时间区间" }]}>
+              <TimePicker.RangePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
+            </Form.Item>
+            <Form.Item label="结束时间" name="overnight" valuePropName="checked">
+              <Switch checkedChildren="次日结束" unCheckedChildren="当日结束" />
+            </Form.Item>
+            <Typography.Paragraph type="secondary">
+              跨天场景示例：选择 08:00 - 02:00，并开启“次日结束”，列表将显示为 08:00 - 次日 02:00。
+            </Typography.Paragraph>
+          </Form>
+        </Modal>
+      );
+    }
+
     function DetailDrawer({ activeKey, record, onClose }) {
       const sections = detailSections[activeKey] || [];
       const drawerTitle = record ? `${meta[activeKey][1]}详情` : "";
@@ -725,13 +902,16 @@
 
     function Page({ activeKey }) {
       const [deliveryOrderTab, setDeliveryOrderTab] = React.useState("deliveryOrder");
-      const pageKey = activeKey === "deliveryOrder" ? deliveryOrderTab : activeKey;
+      const [cardOrderTab, setCardOrderTab] = React.useState("cardOrder");
+      const [exchangeConfigTab, setExchangeConfigTab] = React.useState("exchangeConfig");
+      const pageKey = activeKey === "deliveryOrder" ? deliveryOrderTab : activeKey === "cardOrder" ? cardOrderTab : activeKey === "exchangeConfig" ? exchangeConfigTab : activeKey;
       const [data, setData] = React.useState(mock[pageKey] || []);
       const [viewData, setViewData] = React.useState(mock[pageKey] || []);
       const [detail, setDetail] = React.useState(null);
       const [editOpen, setEditOpen] = React.useState(false);
       const [editMode, setEditMode] = React.useState("新增");
       const [editRecord, setEditRecord] = React.useState(null);
+      const [batchConfigOpen, setBatchConfigOpen] = React.useState(false);
       const [action, setAction] = React.useState(null);
       const [actionRecord, setActionRecord] = React.useState(null);
       const [agreementTab, setAgreementTab] = React.useState("使用协议");
@@ -742,6 +922,7 @@
         setViewData(mock[pageKey] || []);
         setDetail(null);
         setEditOpen(false);
+        setBatchConfigOpen(false);
         setAction(null);
         if (activeKey === "agreement") {
           setAgreementTab("使用协议");
@@ -778,16 +959,19 @@
       const finalTableData = pageKey === "agreementConsent"
         ? viewData.filter(item => item.type === agreementConsentTab)
         : agreementViewData;
-      const noActionPages = ["agreementConsent", "deliveryOrderLog", "userList"];
+      const noActionPages = ["agreementConsent", "deliveryOrderLog", "cardOrderLog", "pointsOrder", "exchangeConfigLog", "feedbackList", "userList"];
       const noExportPages = [
         "agreement",
         "agreementConsent",
         "deliveryOrder",
         "deliveryOrderLog",
         "cardOrder",
+        "cardOrderLog",
         "pointsOrder",
         "exchangeConfig",
+        "exchangeConfigLog",
         "packageConfig",
+        "storeList",
         "robotTask",
         "feedbackList",
         "userList"
@@ -801,7 +985,7 @@
                 type: agreementTab,
                 version: values.version,
                 content: values.content,
-                effectiveRange: "-",
+                createdAt: dayjs().format("YYYY-MM-DD HH:mm"),
                 status: "停用"
               }
             : {
@@ -816,6 +1000,15 @@
           setViewData(viewData.map(item => item.id === editRecord.id ? { ...item, ...values, updatedAt: dayjs().format("YYYY-MM-DD HH:mm") } : item));
         }
         setEditOpen(false);
+        message.success("保存成功");
+      };
+      const handleStoreHoursSave = (storeIds, values) => {
+        const updateItem = (item) => storeIds.includes(item.id) ? { ...item, ...values } : item;
+        setData(data.map(updateItem));
+        setViewData(viewData.map(updateItem));
+        setBatchConfigOpen(false);
+        setAction(null);
+        setActionRecord(null);
         message.success("保存成功");
       };
 
@@ -851,18 +1044,43 @@
               />
             </div>
           )}
+          {activeKey === "cardOrder" && (
+            <div className="panel tab-panel">
+              <Tabs
+                activeKey={cardOrderTab}
+                onChange={setCardOrderTab}
+                items={[
+                  { key: "cardOrder", label: "特惠卡订单" },
+                  { key: "cardOrderLog", label: "操作日志" }
+                ]}
+              />
+            </div>
+          )}
+          {activeKey === "exchangeConfig" && (
+            <div className="panel tab-panel">
+              <Tabs
+                activeKey={exchangeConfigTab}
+                onChange={setExchangeConfigTab}
+                items={[
+                  { key: "exchangeConfig", label: "积分兑换配置" },
+                  { key: "exchangeConfigLog", label: "操作日志" }
+                ]}
+              />
+            </div>
+          )}
           <SearchPanel activeKey={pageKey} onSearch={() => message.success("查询完成")} onReset={() => setViewData(data)} />
           <div className="panel toolbar">
             <Space>
               <Button type="primary" icon={<SearchOutlined />} onClick={() => message.success("查询完成")}>查询</Button>
               <Button icon={<ReloadOutlined />} onClick={() => setViewData(data)}>重置</Button>
               {!noExportPages.includes(pageKey) && <Button icon={<DownloadOutlined />} onClick={() => message.info("导出任务已创建")}>导出</Button>}
+              {pageKey === "storeList" && <Button icon={<EditOutlined />} onClick={() => setBatchConfigOpen(true)}>批量配置</Button>}
             </Space>
             {canAdd && <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditMode("新增"); setEditRecord({ status: pageKey === "agreement" ? "停用" : "下架", content: "" }); setEditOpen(true); }}>{pageKey === "agreement" ? "新增协议" : pageKey === "exchangeConfig" ? "新增商品/权益" : "新增套餐"}</Button>}
           </div>
           <div className="panel table-panel">
             <div className="table-title-row">
-              <span>{pageKey === "deliveryOrderLog" ? "操作日志列表" : `${meta[activeKey][1]}列表`}</span>
+              <span>{["deliveryOrderLog", "cardOrderLog", "exchangeConfigLog"].includes(pageKey) ? "操作日志列表" : `${meta[activeKey][1]}列表`}</span>
               <span>分页默认每页 10 条，支持切换 10 / 20 / 50 条；空数据文案：暂无数据。</span>
             </div>
             <Table
@@ -876,7 +1094,9 @@
           </div>
           <DetailDrawer activeKey={pageKey} record={detail} onClose={() => setDetail(null)} />
           <EditModal open={editOpen} mode={editMode} activeKey={pageKey} agreementTab={agreementTab} record={editRecord} onCancel={() => setEditOpen(false)} onSave={handleSave} />
-          <ActionModal action={action} record={actionRecord} onClose={() => setAction(null)} />
+          <StoreBatchConfigModal open={batchConfigOpen} stores={data} onCancel={() => setBatchConfigOpen(false)} onSave={handleStoreHoursSave} />
+          <StoreConfigModal open={action === "configStore"} record={actionRecord} onCancel={() => setAction(null)} onSave={handleStoreHoursSave} />
+          <ActionModal action={action === "configStore" ? null : action} record={actionRecord} onClose={() => setAction(null)} />
         </>
       );
     }
@@ -886,10 +1106,11 @@
         agreement: [["查看", () => onView(record)]],
         agreementConsent: [],
         deliveryOrder: [["查看", () => onView(record)], ["退款", () => onAction("refund", record), null, isRefundDisabled(record)]],
-        cardOrder: [["补发次数", () => onAction("compensate", record)], ["延长有效期", () => onAction("extend", record)], ["冻结/解冻", () => onAction("freeze", record)]],
-        pointsOrder: [["积分返还", () => onAction("returnPoints", record)]],
-        exchangeConfig: [["编辑", () => onEdit(record)], [record.status === "上架" ? "下架" : "上架", () => message.success("保存成功")], ["删除", () => onDelete(record), "danger"]],
+        cardOrder: [["补发次数", () => onAction("compensate", record), null, isCardCompensateDisabled(record)]],
+        pointsOrder: [],
+        exchangeConfig: [["编辑", () => onEdit(record)], [record.status === "上架" ? "下架" : "上架", () => message.success("保存成功")]],
         packageConfig: [["编辑", () => onEdit(record)], [record.status === "上架" ? "下架" : "上架", () => message.success("保存成功")]],
+        storeList: [["配置", () => onAction("configStore", record)]],
         robotTask: [["查看", () => onView(record)], ["处理异常", () => record.status === "异常" ? onAction("handleTask", record) : message.warning("只有异常任务可以进行异常处理")]],
         feedbackList: [["查看", () => onView(record)]],
         userList: []
@@ -918,7 +1139,7 @@
             <Layout className="layout">
               <Sider className="sider" width={252}>
                 <div className="brand"><div className="brand-logo">智</div><div className="brand-text">智慧商贸后台</div></div>
-                <Menu theme="dark" mode="inline" items={menuItems} selectedKeys={[activeKey]} defaultOpenKeys={["content","order","points","card","robot","feedback","user"]} onClick={({ key }) => setActiveKey(key)} />
+                <Menu theme="dark" mode="inline" items={menuItems} selectedKeys={[activeKey]} defaultOpenKeys={["content","order","points","card","shop","robot","feedback","user"]} onClick={({ key }) => setActiveKey(key)} />
               </Sider>
               <Layout className="content-layout">
                 <Header className="header">
