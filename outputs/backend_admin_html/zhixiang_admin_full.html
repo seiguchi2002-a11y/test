@@ -261,7 +261,7 @@
 
     const meta = {
       agreement: ["内容与协议", "协议管理", "/content/agreement-management", "维护小程序内展示的各类协议、通知、须知和操作指南。"],
-      agreementConsent: ["内容与协议", "协议同意列表", "/content/agreement-consent-list", "查看用户对协议、服务须知、购买须知等内容的同意情况。"],
+      agreementConsent: ["内容与协议", "协议同意列表", "/content/agreement-consent-list", "查看用户对协议、隐私政策、使用须知等内容的同意情况。"],
       deliveryOrder: ["订单中心", "配送订单", "/order/delivery-order", "查看用户在小程序提交的机器人配送订单。"],
       cardOrder: ["订单中心", "特惠卡订单", "/order/card-order", "查看用户购买月卡、周卡、权益卡等特惠卡的订单。"],
       pointsOrder: ["订单中心", "积分兑换订单", "/order/points-exchange-order", "查看用户使用积分兑换商品或权益的订单。"],
@@ -309,7 +309,7 @@
     };
 
     const options = {
-      agreementType: ["使用协议", "服务须知", "购买须知", "积分兑换须知", "操作指南"],
+      agreementType: ["用户协议", "隐私政策", "使用须知", "积分兑换须知", "操作指南"],
       enabled: ["启用", "停用"],
       pay: ["待支付", "已支付", "已退款", "支付失败", "已取消"],
       delivery: ["待取件", "配送中", "已完成", "已取消", "异常"],
@@ -345,15 +345,15 @@
 
     const mock = {
       agreement: [
-        { id: "AG-USE-001", type: "使用协议", version: "v1.0", createdAt: "2026-01-01 09:00", status: "停用", content: "<p>用户使用协议历史版本 v1.0，主要说明账号注册、服务使用、订单规则等基础内容。</p>" },
-        { id: "AG-USE-002", type: "使用协议", version: "v1.1", createdAt: "2026-04-01 09:30", status: "停用", content: "<p>用户使用协议历史版本 v1.1，补充了机器人配送、权益使用和异常处理相关说明。</p>" },
-        { id: "AG-USE-003", type: "使用协议", version: "v1.2", createdAt: "2026-05-20 10:00", status: "启用", content: "<p><strong>用户使用协议当前版本 v1.2</strong>，明确用户在智慧商贸小程序中使用订单、配送、积分、特惠卡等服务的权利义务。</p>" },
-        { id: "AG-SVC-001", type: "服务须知", version: "v1.0", createdAt: "2026-01-01 09:10", status: "停用", content: "<p>服务须知历史版本 v1.0，说明机器人配送服务范围、取件提醒和基础异常反馈入口。</p>" },
-        { id: "AG-SVC-002", type: "服务须知", version: "v1.1", createdAt: "2026-04-01 09:40", status: "停用", content: "<p>服务须知历史版本 v1.1，补充机器人到达提醒、舱门异常、配送超时等处理规则。</p>" },
-        { id: "AG-SVC-003", type: "服务须知", version: "v1.2", createdAt: "2026-05-20 10:10", status: "启用", content: "<p><strong>服务须知当前版本 v1.2</strong>，请用户在机器人到达后及时取件，若遇到路线异常或舱门无法打开，可提交反馈并等待人工处理。</p>" },
-        { id: "AG-BUY-001", type: "购买须知", version: "v1.0", createdAt: "2026-01-01 09:20", status: "停用", content: "<p>购买须知历史版本 v1.0，说明月卡、周卡购买成功后的权益发放和基础使用规则。</p>" },
-        { id: "AG-BUY-002", type: "购买须知", version: "v1.1", createdAt: "2026-04-01 09:50", status: "停用", content: "<p>购买须知历史版本 v1.1，明确周卡与月卡可以同时购买，但不能叠加使用。</p>" },
-        { id: "AG-BUY-003", type: "购买须知", version: "v1.2", createdAt: "2026-05-20 10:20", status: "启用", content: "<p><strong>购买须知当前版本 v1.2</strong>，特惠卡购买后按购买顺序生效，已购买特惠卡暂不支持退卡。</p>" },
+        { id: "AG-USE-001", type: "用户协议", version: "v1.0", createdAt: "2026-01-01 09:00", status: "停用", content: "<p>用户协议历史版本 v1.0，主要说明账号注册、服务使用、订单规则等基础内容。</p>" },
+        { id: "AG-USE-002", type: "用户协议", version: "v1.1", createdAt: "2026-04-01 09:30", status: "停用", content: "<p>用户协议历史版本 v1.1，补充了机器人配送、权益使用和异常处理相关说明。</p>" },
+        { id: "AG-USE-003", type: "用户协议", version: "v1.2", createdAt: "2026-05-20 10:00", status: "启用", content: "<p><strong>用户协议当前版本 v1.2</strong>，明确用户在智慧商贸小程序中使用订单、配送、积分、特惠卡等服务的权利义务。</p>" },
+        { id: "AG-SVC-001", type: "隐私政策", version: "v1.0", createdAt: "2026-01-01 09:10", status: "停用", content: "<p>隐私政策历史版本 v1.0，说明机器人配送服务范围、取件提醒和基础异常反馈入口。</p>" },
+        { id: "AG-SVC-002", type: "隐私政策", version: "v1.1", createdAt: "2026-04-01 09:40", status: "停用", content: "<p>隐私政策历史版本 v1.1，补充机器人到达提醒、舱门异常、配送超时等处理规则。</p>" },
+        { id: "AG-SVC-003", type: "隐私政策", version: "v1.2", createdAt: "2026-05-20 10:10", status: "启用", content: "<p><strong>隐私政策当前版本 v1.2</strong>，请用户在机器人到达后及时取件，若遇到路线异常或舱门无法打开，可提交反馈并等待人工处理。</p>" },
+        { id: "AG-BUY-001", type: "使用须知", version: "v1.0", createdAt: "2026-01-01 09:20", status: "停用", content: "<p>使用须知历史版本 v1.0，说明月卡、周卡购买成功后的权益发放和基础使用规则。</p>" },
+        { id: "AG-BUY-002", type: "使用须知", version: "v1.1", createdAt: "2026-04-01 09:50", status: "停用", content: "<p>使用须知历史版本 v1.1，明确周卡与月卡可以同时购买，但不能叠加使用。</p>" },
+        { id: "AG-BUY-003", type: "使用须知", version: "v1.2", createdAt: "2026-05-20 10:20", status: "启用", content: "<p><strong>使用须知当前版本 v1.2</strong>，特惠卡购买后按购买顺序生效，已购买特惠卡暂不支持退卡。</p>" },
         { id: "AG-POINT-001", type: "积分兑换须知", version: "v1.0", createdAt: "2026-01-01 09:30", status: "停用", content: "<p>积分兑换须知历史版本 v1.0，说明积分可兑换配送权益，兑换成功后生成权益记录。</p>" },
         { id: "AG-POINT-002", type: "积分兑换须知", version: "v1.1", createdAt: "2026-04-01 10:00", status: "停用", content: "<p>积分兑换须知历史版本 v1.1，补充兑换失败后的积分返还和权益补发规则。</p>" },
         { id: "AG-POINT-003", type: "积分兑换须知", version: "v1.2", createdAt: "2026-05-20 10:30", status: "启用", content: "<p><strong>积分兑换须知当前版本 v1.2</strong>，积分兑换权益有效期暂定 30 天，兑换后请在有效期内使用。</p>" },
@@ -362,18 +362,18 @@
         { id: "AG-GUIDE-003", type: "操作指南", version: "v1.2", createdAt: "2026-05-20 10:40", status: "启用", content: "<p><strong>操作指南当前版本 v1.2</strong>，包含机器人取件、输入取件码、异常反馈、客服处理等完整步骤说明。</p>" }
       ],
       agreementConsent: [
-        { id: "AC-USE-001", nickname: "张三", phone: "13812345678", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 10:12", content: "用户当时同意的使用协议 v1.2 正文快照。" },
-        { id: "AC-USE-002", nickname: "李四", phone: "13987654321", type: "使用协议", title: "用户使用协议", version: "v1.2", agreedAt: "2026-05-20 11:35", content: "用户当时同意的使用协议 v1.2 正文快照。" },
-        { id: "AC-USE-003", nickname: "", phone: "13666668888", type: "使用协议", title: "用户使用协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的使用协议 v1.1 正文快照。" },
-        { id: "AC-USE-004", nickname: "赵六", phone: "13511112222", type: "使用协议", title: "用户使用协议", version: "v1.0", agreedAt: "2026-02-08 14:40", content: "用户当时同意的使用协议 v1.0 正文快照。" },
-        { id: "AC-SVC-001", nickname: "陈七", phone: "13722223333", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 12:20", content: "用户当时同意的服务须知 v1.2 正文快照。" },
-        { id: "AC-SVC-002", nickname: "", phone: "13233334444", type: "服务须知", title: "机器人配送服务须知", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的服务须知 v1.2 正文快照。" },
-        { id: "AC-SVC-003", nickname: "周九", phone: "13155556666", type: "服务须知", title: "机器人配送服务须知", version: "v1.1", agreedAt: "2026-04-28 16:10", content: "用户当时同意的服务须知 v1.1 正文快照。" },
-        { id: "AC-SVC-004", nickname: "吴十", phone: "13377778888", type: "服务须知", title: "机器人配送服务须知", version: "v1.0", agreedAt: "2026-03-12 10:02", content: "用户当时同意的服务须知 v1.0 正文快照。" },
-        { id: "AC-BUY-001", nickname: "郑一", phone: "13488889999", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的购买须知 v1.2 正文快照。" },
-        { id: "AC-BUY-002", nickname: "冯二", phone: "13799990000", type: "购买须知", title: "特惠卡购买须知", version: "v1.2", agreedAt: "2026-05-19 18:30", content: "用户当时同意的购买须知 v1.2 正文快照。" },
-        { id: "AC-BUY-003", nickname: "韩三", phone: "15011112222", type: "购买须知", title: "特惠卡购买须知", version: "v1.1", agreedAt: "2026-04-19 12:12", content: "用户当时同意的购买须知 v1.1 正文快照。" },
-        { id: "AC-BUY-004", nickname: "杨四", phone: "15133334444", type: "购买须知", title: "特惠卡购买须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的购买须知 v1.0 正文快照。" },
+        { id: "AC-USE-001", nickname: "张三", phone: "13812345678", type: "用户协议", title: "用户协议", version: "v1.2", agreedAt: "2026-05-20 10:12", content: "用户当时同意的用户协议 v1.2 正文快照。" },
+        { id: "AC-USE-002", nickname: "李四", phone: "13987654321", type: "用户协议", title: "用户协议", version: "v1.2", agreedAt: "2026-05-20 11:35", content: "用户当时同意的用户协议 v1.2 正文快照。" },
+        { id: "AC-USE-003", nickname: "", phone: "13666668888", type: "用户协议", title: "用户协议", version: "v1.1", agreedAt: "2026-04-12 09:18", content: "用户当时同意的用户协议 v1.1 正文快照。" },
+        { id: "AC-USE-004", nickname: "赵六", phone: "13511112222", type: "用户协议", title: "用户协议", version: "v1.0", agreedAt: "2026-02-08 14:40", content: "用户当时同意的用户协议 v1.0 正文快照。" },
+        { id: "AC-SVC-001", nickname: "陈七", phone: "13722223333", type: "隐私政策", title: "机器人配送隐私政策", version: "v1.2", agreedAt: "2026-05-20 12:20", content: "用户当时同意的隐私政策 v1.2 正文快照。" },
+        { id: "AC-SVC-002", nickname: "", phone: "13233334444", type: "隐私政策", title: "机器人配送隐私政策", version: "v1.2", agreedAt: "2026-05-20 14:06", content: "用户当时同意的隐私政策 v1.2 正文快照。" },
+        { id: "AC-SVC-003", nickname: "周九", phone: "13155556666", type: "隐私政策", title: "机器人配送隐私政策", version: "v1.1", agreedAt: "2026-04-28 16:10", content: "用户当时同意的隐私政策 v1.1 正文快照。" },
+        { id: "AC-SVC-004", nickname: "吴十", phone: "13377778888", type: "隐私政策", title: "机器人配送隐私政策", version: "v1.0", agreedAt: "2026-03-12 10:02", content: "用户当时同意的隐私政策 v1.0 正文快照。" },
+        { id: "AC-BUY-001", nickname: "郑一", phone: "13488889999", type: "使用须知", title: "特惠卡使用须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的使用须知 v1.2 正文快照。" },
+        { id: "AC-BUY-002", nickname: "冯二", phone: "13799990000", type: "使用须知", title: "特惠卡使用须知", version: "v1.2", agreedAt: "2026-05-19 18:30", content: "用户当时同意的使用须知 v1.2 正文快照。" },
+        { id: "AC-BUY-003", nickname: "韩三", phone: "15011112222", type: "使用须知", title: "特惠卡使用须知", version: "v1.1", agreedAt: "2026-04-19 12:12", content: "用户当时同意的使用须知 v1.1 正文快照。" },
+        { id: "AC-BUY-004", nickname: "杨四", phone: "15133334444", type: "使用须知", title: "特惠卡使用须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的使用须知 v1.0 正文快照。" },
         { id: "AC-POINT-001", nickname: "朱五", phone: "15255556666", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-20 08:42", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
         { id: "AC-POINT-002", nickname: "秦六", phone: "15377778888", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-19 15:16", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
         { id: "AC-POINT-003", nickname: "何七", phone: "15599990000", type: "积分兑换须知", title: "积分兑换须知", version: "v1.1", agreedAt: "2026-04-21 11:52", content: "用户当时同意的积分兑换须知 v1.1 正文快照。" },
@@ -914,8 +914,8 @@
       const [batchConfigOpen, setBatchConfigOpen] = React.useState(false);
       const [action, setAction] = React.useState(null);
       const [actionRecord, setActionRecord] = React.useState(null);
-      const [agreementTab, setAgreementTab] = React.useState("使用协议");
-      const [agreementConsentTab, setAgreementConsentTab] = React.useState("使用协议");
+      const [agreementTab, setAgreementTab] = React.useState("用户协议");
+      const [agreementConsentTab, setAgreementConsentTab] = React.useState("用户协议");
 
       React.useEffect(() => {
         setData(mock[pageKey] || []);
@@ -925,10 +925,10 @@
         setBatchConfigOpen(false);
         setAction(null);
         if (activeKey === "agreement") {
-          setAgreementTab("使用协议");
+          setAgreementTab("用户协议");
         }
         if (activeKey === "agreementConsent") {
-          setAgreementConsentTab("使用协议");
+          setAgreementConsentTab("用户协议");
         }
       }, [activeKey, pageKey]);
 
