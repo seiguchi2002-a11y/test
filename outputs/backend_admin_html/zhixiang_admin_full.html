@@ -310,6 +310,7 @@
 
     const options = {
       agreementType: ["用户协议", "隐私政策", "使用须知", "积分兑换须知", "操作指南"],
+      agreementConsentType: ["用户协议", "隐私政策", "使用须知"],
       enabled: ["启用", "停用"],
       pay: ["待支付", "已支付", "已退款", "支付失败", "已取消"],
       delivery: ["待取件", "配送中", "已完成", "已取消", "异常"],
@@ -373,15 +374,7 @@
         { id: "AC-BUY-001", nickname: "郑一", phone: "13488889999", type: "使用须知", title: "特惠卡使用须知", version: "v1.2", agreedAt: "2026-05-20 09:05", content: "用户当时同意的使用须知 v1.2 正文快照。" },
         { id: "AC-BUY-002", nickname: "冯二", phone: "13799990000", type: "使用须知", title: "特惠卡使用须知", version: "v1.2", agreedAt: "2026-05-19 18:30", content: "用户当时同意的使用须知 v1.2 正文快照。" },
         { id: "AC-BUY-003", nickname: "韩三", phone: "15011112222", type: "使用须知", title: "特惠卡使用须知", version: "v1.1", agreedAt: "2026-04-19 12:12", content: "用户当时同意的使用须知 v1.1 正文快照。" },
-        { id: "AC-BUY-004", nickname: "杨四", phone: "15133334444", type: "使用须知", title: "特惠卡使用须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的使用须知 v1.0 正文快照。" },
-        { id: "AC-POINT-001", nickname: "朱五", phone: "15255556666", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-20 08:42", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
-        { id: "AC-POINT-002", nickname: "秦六", phone: "15377778888", type: "积分兑换须知", title: "积分兑换须知", version: "v1.2", agreedAt: "2026-05-19 15:16", content: "用户当时同意的积分兑换须知 v1.2 正文快照。" },
-        { id: "AC-POINT-003", nickname: "何七", phone: "15599990000", type: "积分兑换须知", title: "积分兑换须知", version: "v1.1", agreedAt: "2026-04-21 11:52", content: "用户当时同意的积分兑换须知 v1.1 正文快照。" },
-        { id: "AC-POINT-004", nickname: "吕八", phone: "15611113333", type: "积分兑换须知", title: "积分兑换须知", version: "v1.0", agreedAt: "2026-02-11 13:23", content: "用户当时同意的积分兑换须知 v1.0 正文快照。" },
-        { id: "AC-GUIDE-001", nickname: "施九", phone: "15722224444", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-20 13:08", content: "用户当时同意的操作指南 v1.2 正文快照。" },
-        { id: "AC-GUIDE-002", nickname: "孔十", phone: "15833335555", type: "操作指南", title: "机器人取件操作指南", version: "v1.2", agreedAt: "2026-05-19 10:19", content: "用户当时同意的操作指南 v1.2 正文快照。" },
-        { id: "AC-GUIDE-003", nickname: "曹一", phone: "15944446666", type: "操作指南", title: "机器人取件操作指南", version: "v1.1", agreedAt: "2026-04-13 16:33", content: "用户当时同意的操作指南 v1.1 正文快照。" },
-        { id: "AC-GUIDE-004", nickname: "严二", phone: "18855557777", type: "操作指南", title: "机器人取件操作指南", version: "v1.0", agreedAt: "2026-03-06 09:24", content: "用户当时同意的操作指南 v1.0 正文快照。" }
+        { id: "AC-BUY-004", nickname: "杨四", phone: "15133334444", type: "使用须知", title: "特惠卡使用须知", version: "v1.0", agreedAt: "2026-01-23 17:44", content: "用户当时同意的使用须知 v1.0 正文快照。" }
       ],
       deliveryOrder: [
         { id: "DO-20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", pickup: "星巴克", delivery: "服务台", pickupCode: "2468", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21", paidAt: "2026-05-20 10:22", payMethod: "微信支付", robotNo: "RB-08", floor: "3F", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-" },
@@ -1019,7 +1012,7 @@
               <Tabs
                 activeKey={agreementTab}
                 onChange={setAgreementTab}
-                items={options.agreementType.map(item => ({ key: item, label: item }))}
+                items={options.agreementConsentType.map(item => ({ key: item, label: item }))}
               />
             </div>
           )}
