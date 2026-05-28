@@ -310,6 +310,7 @@
 
     const options = {
       agreementType: ["用户协议", "隐私政策", "使用须知", "积分兑换须知", "操作指南"],
+      agreementConsentType: ["用户协议", "隐私政策", "使用须知"],
       enabled: ["启用", "停用"],
       pay: ["待支付", "已支付", "已退款", "支付失败", "已取消"],
       delivery: ["待取件", "配送中", "已完成", "已取消", "异常"],
@@ -667,7 +668,7 @@
           <Form form={form} layout="vertical">
             {activeKey === "agreement" && (
               <Typography.Paragraph type="secondary" style={{ marginTop: 0 }}>
-                当前协议分类：{agreementTab}。新增后将自动归属到该分类，默认状态为停用。
+                点击“确认”按钮后，新版本协议将立即启用，旧版本协议状态将转为停用状态
               </Typography.Paragraph>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -1028,7 +1029,7 @@
               <Tabs
                 activeKey={agreementConsentTab}
                 onChange={setAgreementConsentTab}
-                items={options.agreementType.map(item => ({ key: item, label: item }))}
+                items={options.agreementConsentType.map(item => ({ key: item, label: item }))}
               />
             </div>
           )}
