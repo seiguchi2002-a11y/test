@@ -239,14 +239,10 @@
       ]},
       { key: "order", icon: <ShoppingCartOutlined />, label: "订单中心", children: [
         { key: "deliveryOrder", label: "配送订单" },
-        { key: "cardOrder", label: "特惠卡订单" },
         { key: "pointsOrder", label: "积分兑换订单" }
       ]},
       { key: "points", icon: <GiftOutlined />, label: "积分兑换", children: [
         { key: "exchangeConfig", label: "积分兑换配置" }
-      ]},
-      { key: "card", icon: <IdcardOutlined />, label: "特惠卡", children: [
-        { key: "packageConfig", label: "特惠卡配置" }
       ]},
       { key: "shop", icon: <ShopOutlined />, label: "店铺管理", children: [
         { key: "storeList", label: "店铺列表" }
@@ -281,7 +277,7 @@
       已到期: "default", 已冻结: "error", 已作废: "error", 待发放: "warning", 已发放: "success",
       兑换失败: "error", 发放失败: "error", 待执行: "default", 执行中: "processing",
       待处理: "warning", 处理中: "processing", 已处理: "success",
-      未启用: "default", 已使用: "success", 未使用: "warning"
+      未启用: "default", 已使用: "success", 未使用: "warning", 已失效: "default"
     };
     const tag = (value) => value && value !== "-" ? <Tag color={statusColor[value] || "blue"}>{value}</Tag> : "-";
     const maskPhone = (phone) => phone || "-";
@@ -326,13 +322,13 @@
       productType: ["权益", "实物", "优惠券"],
       itemType: ["实物", "权益", "次数"],
       floor: ["L1", "L2", "L3", "L4", "L5"],
-      payMethod: ["微信支付", "特惠卡支付"],
+      payMethod: ["微信支付"],
       cardPay: ["待支付", "已支付", "已取消", "已过期"],
       cardUse: ["使用中", "已用完", "已到期", "未启用"],
       cardOperationType: ["补发次数"],
       exchangeOperationType: ["编辑", "上架", "下架", "新增"],
       packageOperationType: ["编辑", "上架", "下架", "新增"],
-      pointsUse: ["已使用", "未使用"],
+      pointsUse: ["已使用", "未使用", "已失效"],
       robotTask: ["执行中", "已完成", "异常", "已取消"]
     };
 
@@ -386,14 +382,14 @@
       ],
       deliveryOrder: [
         { id: "DO-20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", pickup: "星巴克", delivery: "服务台", pickupCode: "2468", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21", paidAt: "2026-05-20 10:22", payMethod: "微信支付", robotNo: "RB-08", floor: "3F", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-" },
-        { id: "DO-20260520002", orderNo: "DO20260520002", user: "李四", phone: "13987654321", pickup: "瑞幸咖啡", delivery: "影院前台", pickupCode: "0912", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "异常", createdAt: "2026-05-20 09:42", paidAt: "2026-05-20 09:43", payMethod: "特惠卡支付", robotNo: "RB-03", floor: "2F", startAt: "2026-05-20 09:45", finishAt: "-", exception: "路线异常" },
+        { id: "DO-20260520002", orderNo: "DO20260520002", user: "李四", phone: "13987654321", pickup: "瑞幸咖啡", delivery: "影院前台", pickupCode: "0912", amount: "199积分", amountBenefit: "199积分", payStatus: "已支付", deliveryStatus: "异常", createdAt: "2026-05-20 09:42", paidAt: "2026-05-20 09:43", payMethod: "微信支付", robotNo: "RB-03", floor: "2F", startAt: "2026-05-20 09:45", finishAt: "-", exception: "路线异常" },
         { id: "DO-20260520003", orderNo: "DO20260520003", user: "王五", phone: "13666668888", pickup: "麦当劳", delivery: "八合里", pickupCode: "5731", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-20 12:18", paidAt: "2026-05-20 12:19", payMethod: "微信支付", robotNo: "RB-06", floor: "3F", startAt: "2026-05-20 12:22", finishAt: "2026-05-20 12:35", exception: "-" },
-        { id: "DO-20260520004", orderNo: "DO20260520004", user: "赵六", phone: "13511112222", pickup: "肯德基", delivery: "优衣库", pickupCode: "8842", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "待取件", createdAt: "2026-05-20 13:05", paidAt: "2026-05-20 13:06", payMethod: "特惠卡支付", robotNo: "RB-01", floor: "1F", startAt: "-", finishAt: "-", exception: "-" },
+        { id: "DO-20260520004", orderNo: "DO20260520004", user: "赵六", phone: "13511112222", pickup: "肯德基", delivery: "优衣库", pickupCode: "8842", amount: "199积分", amountBenefit: "199积分", payStatus: "已支付", deliveryStatus: "待取件", createdAt: "2026-05-20 13:05", paidAt: "2026-05-20 13:06", payMethod: "微信支付", robotNo: "RB-01", floor: "1F", startAt: "-", finishAt: "-", exception: "-" },
         { id: "DO-20260520005", orderNo: "DO20260520005", user: "陈七", phone: "13722223333", pickup: "喜茶", delivery: "B1 停车场入口", pickupCode: "6609", amount: "5.00", amountBenefit: "¥5.00", payStatus: "待支付", deliveryStatus: "-", createdAt: "2026-05-20 13:28", paidAt: "-", payMethod: "微信支付", robotNo: "-", floor: "-", startAt: "-", finishAt: "-", exception: "-" },
         { id: "DO-20260520006", orderNo: "DO20260520006", user: "孙八", phone: "13233334444", pickup: "奈雪的茶", delivery: "海底捞", pickupCode: "3086", amount: "5.00", amountBenefit: "¥5.00", payStatus: "支付失败", deliveryStatus: "已取消", createdAt: "2026-05-20 14:12", paidAt: "-", payMethod: "微信支付", robotNo: "-", floor: "-", startAt: "-", finishAt: "-", exception: "支付失败未生成任务" },
-        { id: "DO-20260519007", orderNo: "DO20260519007", user: "周九", phone: "13155556666", pickup: "海底捞", delivery: "服务台", pickupCode: "7355", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-19 18:26", paidAt: "2026-05-19 18:27", payMethod: "特惠卡支付", robotNo: "RB-05", floor: "4F", startAt: "2026-05-19 18:31", finishAt: "-", exception: "机器人舱门异常" },
+        { id: "DO-20260519007", orderNo: "DO20260519007", user: "周九", phone: "13155556666", pickup: "海底捞", delivery: "服务台", pickupCode: "7355", amount: "199积分", amountBenefit: "199积分", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-19 18:26", paidAt: "2026-05-19 18:27", payMethod: "微信支付", robotNo: "RB-05", floor: "4F", startAt: "2026-05-19 18:31", finishAt: "-", exception: "机器人舱门异常" },
         { id: "DO-20260519008", orderNo: "DO20260519008", user: "吴十", phone: "13377778888", pickup: "八合里", delivery: "影院前台", pickupCode: "1930", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已取消", deliveryStatus: "已取消", createdAt: "2026-05-19 11:15", paidAt: "-", payMethod: "微信支付", robotNo: "-", floor: "-", startAt: "-", finishAt: "-", exception: "用户取消订单" },
-        { id: "DO-20260518009", orderNo: "DO20260518009", user: "郑一", phone: "13488889999", pickup: "优衣库", delivery: "星巴克", pickupCode: "4620", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-18 16:02", paidAt: "2026-05-18 16:03", payMethod: "特惠卡支付", robotNo: "RB-02", floor: "2F", startAt: "2026-05-18 16:06", finishAt: "2026-05-18 16:20", exception: "-" },
+        { id: "DO-20260518009", orderNo: "DO20260518009", user: "郑一", phone: "13488889999", pickup: "优衣库", delivery: "星巴克", pickupCode: "4620", amount: "199积分", amountBenefit: "199积分", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-18 16:02", paidAt: "2026-05-18 16:03", payMethod: "微信支付", robotNo: "RB-02", floor: "2F", startAt: "2026-05-18 16:06", finishAt: "2026-05-18 16:20", exception: "-" },
         { id: "DO-20260518010", orderNo: "DO20260518010", user: "冯二", phone: "13799990000", pickup: "服务台", delivery: "麦当劳", pickupCode: "8194", amount: "5.00", amountBenefit: "¥5.00", payStatus: "已退款", deliveryStatus: "已取消", createdAt: "2026-05-18 09:36", paidAt: "2026-05-18 09:37", payMethod: "微信支付", robotNo: "RB-04", floor: "1F", startAt: "-", finishAt: "-", exception: "人工取消并退款" }
       ],
       deliveryOrderLog: [
@@ -419,14 +415,14 @@
         { id: "COL-20260517001", orderNo: "CO20260428007", admin: "运营管理员D", operationType: "补发次数", operatedAt: "2026-05-17 09:32" }
       ],
       pointsOrder: [
-        { id: "PE-20260519001", exchangeNo: "PE20260519001", user: "张三", phone: "13812345678", productName: "配送权益 1 次", productType: "权益", points: 300, quantity: 1, useStatus: "未使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-19 18:12", grantType: "配送权益次数", grantQuantity: 1, grantAt: "2026-05-19 18:12", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260518004", exchangeNo: "PE20260518004", user: "李四", phone: "13987654321", productName: "配送权益 2 次", productType: "权益", points: 500, quantity: 1, useStatus: "已使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-18 13:24", grantType: "配送权益次数", grantQuantity: 2, grantAt: "2026-05-18 13:25", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260518005", exchangeNo: "PE20260518005", user: "陈七", phone: "13722223333", productName: "配送权益 3 次", productType: "权益", points: 700, quantity: 1, useStatus: "未使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-18 15:36", grantType: "配送权益次数", grantQuantity: 3, grantAt: "2026-05-18 15:36", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260517006", exchangeNo: "PE20260517006", user: "王五", phone: "13666668888", productName: "配送权益 4 次", productType: "权益", points: 900, quantity: 1, useStatus: "已使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-17 11:08", grantType: "配送权益次数", grantQuantity: 4, grantAt: "2026-05-17 11:09", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260516007", exchangeNo: "PE20260516007", user: "赵六", phone: "13511112222", productName: "配送权益 1 次", productType: "权益", points: 300, quantity: 1, useStatus: "已使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-16 19:20", grantType: "配送权益次数", grantQuantity: 1, grantAt: "2026-05-16 19:21", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260515008", exchangeNo: "PE20260515008", user: "孙八", phone: "13233334444", productName: "配送权益 2 次", productType: "权益", points: 500, quantity: 1, useStatus: "未使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-15 14:44", grantType: "配送权益次数", grantQuantity: 2, grantAt: "2026-05-15 14:45", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260514009", exchangeNo: "PE20260514009", user: "周九", phone: "13155556666", productName: "配送权益 3 次", productType: "权益", points: 700, quantity: 1, useStatus: "未使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-14 10:26", grantType: "配送权益次数", grantQuantity: 3, grantAt: "2026-05-14 10:27", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
-        { id: "PE-20260513010", exchangeNo: "PE20260513010", user: "吴十", phone: "13377778888", productName: "配送权益 4 次", productType: "权益", points: 900, quantity: 1, useStatus: "已使用", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-13 16:18", grantType: "配送权益次数", grantQuantity: 4, grantAt: "2026-05-13 16:19", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" }
+        { id: "PE-20260519001", exchangeNo: "PE20260519001", user: "张三", phone: "13812345678", productName: "配送权益 1 次", productType: "权益", points: 300, quantity: 1, useStatus: "未使用", useTime: "-", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-19 18:12", grantType: "配送权益次数", grantQuantity: 1, grantAt: "2026-05-19 18:12", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260518004", exchangeNo: "PE20260518004", user: "李四", phone: "13987654321", productName: "配送权益 2 次", productType: "权益", points: 500, quantity: 1, useStatus: "已使用", useTime: "2026-05-19 09:18", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-18 13:24", grantType: "配送权益次数", grantQuantity: 2, grantAt: "2026-05-18 13:25", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260518005", exchangeNo: "PE20260518005", user: "陈七", phone: "13722223333", productName: "配送权益 3 次", productType: "权益", points: 700, quantity: 1, useStatus: "未使用", useTime: "-", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-18 15:36", grantType: "配送权益次数", grantQuantity: 3, grantAt: "2026-05-18 15:36", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260517006", exchangeNo: "PE20260517006", user: "王五", phone: "13666668888", productName: "配送权益 4 次", productType: "权益", points: 900, quantity: 1, useStatus: "已使用", useTime: "2026-05-18 11:42", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-17 11:08", grantType: "配送权益次数", grantQuantity: 4, grantAt: "2026-05-17 11:09", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260516007", exchangeNo: "PE20260516007", user: "赵六", phone: "13511112222", productName: "配送权益 1 次", productType: "权益", points: 300, quantity: 1, useStatus: "已使用", useTime: "2026-05-17 20:06", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-16 19:20", grantType: "配送权益次数", grantQuantity: 1, grantAt: "2026-05-16 19:21", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260515008", exchangeNo: "PE20260515008", user: "孙八", phone: "13233334444", productName: "配送权益 2 次", productType: "权益", points: 500, quantity: 1, useStatus: "未使用", useTime: "-", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-15 14:44", grantType: "配送权益次数", grantQuantity: 2, grantAt: "2026-05-15 14:45", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260514009", exchangeNo: "PE20260514009", user: "周九", phone: "13155556666", productName: "配送权益 3 次", productType: "权益", points: 700, quantity: 1, useStatus: "已失效", useTime: "2026-06-14 23:59", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-14 10:26", grantType: "配送权益次数", grantQuantity: 3, grantAt: "2026-05-14 10:27", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" },
+        { id: "PE-20260513010", exchangeNo: "PE20260513010", user: "吴十", phone: "13377778888", productName: "配送权益 4 次", productType: "权益", points: 900, quantity: 1, useStatus: "已使用", useTime: "2026-05-13 16:58", exchangeStatus: "已发放", grantStatus: "已发放", exchangeAt: "2026-05-13 16:18", grantType: "配送权益次数", grantQuantity: 4, grantAt: "2026-05-13 16:19", failReason: "-", deducted: "是", returned: "否", returnAt: "-", returnReason: "-" }
       ],
       exchangeConfig: [
         { id: "PR-001", productId: "PR001", name: "配送权益 1 次", type: "权益", points: 300, benefitTimes: 1, stock: 500, status: "上架", validRange: "2026-05-01 ~ 2026-12-31", createdAt: "2026-05-01 10:00", sort: 1, imageUrl: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=320&q=80", desc: "兑换后获得 1 次机器人配送权益。" },
@@ -529,7 +525,7 @@
       deliveryOrderLog: [["订单号","orderNo"],["管理员","admin"],["退款类型","refundType"],["操作时间","operatedAt"]],
       cardOrder: [["订单号","orderNo"],["用户","user"],["手机号","phone","phone"],["卡类型","cardType"],["金额","amount","money"],["支付状态","payStatus","tag"],["剩余次数","remainTimes"],["到期时间","expireAt"],["下单时间","createdAt"],["支付时间","paidAt"]],
       cardOrderLog: [["订单号","orderNo"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
-      pointsOrder: [["兑换单号","exchangeNo"],["用户","user"],["商品","productName"],["消耗积分","points"],["数量","quantity"],["使用状态","useStatus","tag"],["兑换时间","exchangeAt"]],
+      pointsOrder: [["兑换单号","exchangeNo"],["用户","user"],["商品","productName"],["消耗积分","points"],["数量","quantity"],["使用状态","useStatus","tag"],["使用时间/失效时间","useTime"],["兑换时间","exchangeAt"]],
       exchangeConfig: [["商品ID","productId"],["名称","name"],["图片","imageUrl","singlePreviewImage"],["所需积分","points"],["兑换权益次数","benefitTimes"],["库存","stock"],["上下架状态","status","tag"],["有效期","validRange"],["创建时间","createdAt"]],
       exchangeConfigLog: [["商品ID","productId"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
       packageConfig: [["卡ID","cardId"],["类型","type"],["售价","price","money"],["次数","times"],["有效天数","validDays"],["上下架状态","status","tag"],["排序","sort"],["创建时间","createdAt"]],
@@ -545,7 +541,7 @@
       agreementConsent: [["用户同意信息", [["微信OpenID","openid"],["昵称","nickname"],["手机号","phone"],["协议标题","title"],["协议类型","type"],["版本号","version"],["同意时间","agreedAt"]]], ["当时协议正文", [["协议内容","content","rich"]]]],
       deliveryOrder: [["基本信息", [["订单号","orderNo"],["昵称","user"],["手机号","phone"],["取餐码","pickupCode"],["创建时间","createdAt"],["支付时间","paidAt"],["支付方式","payMethod"],["订单金额","amount"],["支付状态","payStatus"],["配送状态","deliveryStatus"]]], ["配送信息", [["收件点","pickup"],["送达点","delivery"],["机器人编号","robotNo"],["机器人当前楼层","floor"],["任务开始时间","startAt"],["任务完成时间","finishAt"],["异常原因","exception"]]]],
       cardOrder: [["基本信息", [["订单号","orderNo"],["用户","user"],["手机号","phone"],["卡名称","cardName"],["卡类型","cardType"],["金额","amount"],["支付方式","payMethod"],["支付状态","payStatus"],["下单时间","createdAt"],["支付时间","paidAt"]]], ["权益信息", [["总次数","totalTimes"],["已使用次数","usedTimes"],["剩余次数","remainTimes"],["生效时间","startAt"],["到期时间","expireAt"],["状态","useStatus"]]], ["操作记录", [["操作记录","records","list"]]]],
-      pointsOrder: [["基本信息", [["兑换单号","exchangeNo"],["用户","user"],["手机号","phone"],["商品名称","productName"],["商品类型","productType"],["消耗积分","points"],["兑换数量","quantity"],["兑换状态","exchangeStatus"],["兑换时间","exchangeAt"]]], ["发放信息", [["权益类型","grantType"],["发放数量","grantQuantity"],["发放状态","grantStatus"],["发放时间","grantAt"],["失败原因","failReason"]]], ["积分处理信息", [["是否已扣积分","deducted"],["是否已返还积分","returned"],["返还时间","returnAt"],["返还原因","returnReason"]]]],
+      pointsOrder: [["基本信息", [["兑换单号","exchangeNo"],["用户","user"],["手机号","phone"],["商品名称","productName"],["商品类型","productType"],["消耗积分","points"],["兑换数量","quantity"],["使用状态","useStatus"],["使用时间/失效时间","useTime"],["兑换状态","exchangeStatus"],["兑换时间","exchangeAt"]]], ["发放信息", [["权益类型","grantType"],["发放数量","grantQuantity"],["发放状态","grantStatus"],["发放时间","grantAt"],["失败原因","failReason"]]], ["积分处理信息", [["是否已扣积分","deducted"],["是否已返还积分","returned"],["返还时间","returnAt"],["返还原因","returnReason"]]]],
       exchangeConfig: [["商品 / 权益信息", [["商品ID","productId"],["名称","name"],["商品类型","type"],["所需积分","points"],["兑换权益次数","benefitTimes"],["库存","stock"],["状态","status"],["有效期","validRange"],["排序","sort"],["商品说明","desc"]]]],
       packageConfig: [["套餐信息", [["卡ID","cardId"],["名称","name"],["类型","type"],["售价","price"],["次数","times"],["有效期","valid"],["上下架状态","status"],["排序","sort"],["套餐说明","desc"]]]],
       storeList: [["店铺信息", [["店铺ID","storeId"],["店铺名称","storeName"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]]]],
@@ -657,7 +653,7 @@
       const isConfig = ["agreement", "exchangeConfig", "packageConfig"].includes(activeKey);
       const fields = {
         agreement: [["版本号","version","input"],["协议内容","content","rich"]],
-        exchangeConfig: [["商品名称","name","input"],["所需积分","points","number"],["兑换权益次数","benefitTimes","number"],["库存","stock","number"],["每人限兑次数","limit","number"],["有效期","validRange","input"],["排序","sort","number"],["购买须知","desc","textarea"]],
+        exchangeConfig: [["商品名称","name","input"],["所需积分","points","number"],["兑换权益次数","benefitTimes","number"],["库存","stock","number"],["有效期","validRange","input"],["排序","sort","number"],["购买须知","desc","textarea"]],
         packageConfig: [["卡类型","type","select",options.cardType],["售价","price","number"],["可使用次数","times","number"],["有效天数","validDays","number"],["排序","sort","number"]]
       }[activeKey] || [];
 
@@ -728,7 +724,7 @@
       return (
         <Modal title={title} open={!!action} onCancel={onClose} onOk={() => form.validateFields().then(() => { message.success("保存成功"); onClose(); })} okText="确认" cancelText="取消" destroyOnClose>
           <Form form={form} layout="vertical">
-            {action === "refund" && <Form.Item label="退款金额 / 退回权益" name="refundValue" initialValue={record?.payMethod === "微信支付" ? `¥${record?.amount || "5.00"}` : "1次权益"}><Input disabled /></Form.Item>}
+            {action === "refund" && <Form.Item label="退款金额 / 退回权益" name="refundValue" initialValue={record?.payMethod === "微信支付" ? `¥${record?.amount || "5.00"}` : "199积分"}><Input disabled /></Form.Item>}
             {action === "handleTask" && <Form.Item label="退款金额" name="refundAmount"><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>}
             {["compensate","handleTask"].includes(action) && <Form.Item label="补偿 / 补发次数" name="times"><InputNumber min={1} precision={0} style={{ width: "100%" }} /></Form.Item>}
             {action === "extend" && <Form.Item label="延长天数" name="days" rules={[{ required: true, message: "请输入延长天数" }]}><InputNumber min={1} precision={0} style={{ width: "100%" }} /></Form.Item>}
@@ -879,7 +875,7 @@
       const renderDetailValue = (key, type) => {
         if (type === "rich") return <div className="rich-box" dangerouslySetInnerHTML={{ __html: record[key] || "" }} />;
         if (type === "list") return <ul className="record-list">{(record[key] || []).map((item, idx) => <li key={idx}>{item}</li>)}</ul>;
-        if (type === "links") return <Space wrap><Button>查看配送订单</Button><Button>查看特惠卡订单</Button><Button>查看积分兑换订单</Button><Button>查看反馈记录</Button></Space>;
+        if (type === "links") return <Space wrap><Button>查看配送订单</Button><Button>查看积分兑换订单</Button><Button>查看反馈记录</Button></Space>;
         if (type === "previewImage") return renderValue(record, key, "previewImage");
         if (["status","payStatus","deliveryStatus","useStatus","exchangeStatus","grantStatus"].includes(key)) return tag(record[key]);
         if (key === "phone" && activeKey !== "agreementConsent") return maskPhone(record[key]);
@@ -1045,18 +1041,6 @@
               />
             </div>
           )}
-          {activeKey === "cardOrder" && (
-            <div className="panel tab-panel">
-              <Tabs
-                activeKey={cardOrderTab}
-                onChange={setCardOrderTab}
-                items={[
-                  { key: "cardOrder", label: "特惠卡订单" },
-                  { key: "cardOrderLog", label: "操作日志" }
-                ]}
-              />
-            </div>
-          )}
           {activeKey === "exchangeConfig" && (
             <div className="panel tab-panel">
               <Tabs
@@ -1140,7 +1124,7 @@
             <Layout className="layout">
               <Sider className="sider" width={252}>
                 <div className="brand"><div className="brand-logo">智</div><div className="brand-text">智慧商贸后台</div></div>
-                <Menu theme="dark" mode="inline" items={menuItems} selectedKeys={[activeKey]} defaultOpenKeys={["content","order","points","card","shop","robot","feedback","user"]} onClick={({ key }) => setActiveKey(key)} />
+                <Menu theme="dark" mode="inline" items={menuItems} selectedKeys={[activeKey]} defaultOpenKeys={["content","order","points","shop","robot","feedback","user"]} onClick={({ key }) => setActiveKey(key)} />
               </Sider>
               <Layout className="content-layout">
                 <Header className="header">
