@@ -817,37 +817,6 @@
         padding: 18px 20px 20px;
       }
 
-      .response-heading {
-        margin: 0 0 14px;
-        color: #334155;
-        font-size: 17px;
-        font-weight: 700;
-      }
-
-      .http-status-line {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        margin-bottom: 14px;
-        color: #334155;
-        font-size: 13px;
-      }
-
-      .http-status {
-        padding: 2px 6px;
-        border-radius: 5px;
-        background: #fff3ec;
-        color: #e65f16;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-        font-size: 12px;
-        font-weight: 650;
-      }
-
-      .http-status.error {
-        background: var(--danger-bg);
-        color: var(--danger);
-      }
-
       .response-code {
         position: relative;
         margin: 0;
@@ -1537,12 +1506,6 @@
         </button>
       </div>
       <div class="detail-modal-body">
-        <h3 class="response-heading" id="detailResponseHeading">完成响应</h3>
-        <div class="http-status-line">
-          <span>HTTP 状态为</span>
-          <span class="http-status" id="detailHttpStatus">200 OK</span>
-          <span>：</span>
-        </div>
         <pre class="response-code" id="detailResponseCode"></pre>
       </div>
     </dialog>
@@ -1671,8 +1634,6 @@
         toastText: document.querySelector("#toastText"),
         detailModal: document.querySelector("#detailModal"),
         detailTaskId: document.querySelector("#detailTaskId"),
-        detailResponseHeading: document.querySelector("#detailResponseHeading"),
-        detailHttpStatus: document.querySelector("#detailHttpStatus"),
         detailResponseCode: document.querySelector("#detailResponseCode"),
         sidebar: document.querySelector("#sidebar"),
         mobileMenuButton: document.querySelector("#mobileMenuButton"),
@@ -1755,15 +1716,7 @@
         const row = allRows.find((item) => item.taskId === taskId);
         if (!row) return;
 
-        const headingByStatus = {
-          成功: "完成响应",
-          失败: "失败响应",
-        };
         elements.detailTaskId.textContent = row.taskId;
-        elements.detailResponseHeading.textContent =
-          headingByStatus[row.status] || "接口响应";
-        elements.detailHttpStatus.textContent = "200 OK";
-        elements.detailHttpStatus.classList.remove("error");
         elements.detailResponseCode.textContent = JSON.stringify(
           buildApiResponse(row),
           null,
