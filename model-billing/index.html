@@ -1,0 +1,2053 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="模型账单页面交互设计原型"
+    />
+    <title>模型账单 · 设计原型</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --background: #f8fafc;
+        --foreground: #171717;
+        --card: #ffffff;
+        --muted: #f4f4f5;
+        --muted-foreground: #71717a;
+        --border: #e4e4e7;
+        --border-subtle: #eceef1;
+        --primary: #18181b;
+        --primary-foreground: #fafafa;
+        --accent: #f0f0f1;
+        --sidebar: #fbfcfd;
+        --sidebar-accent: #e7e7e8;
+        --success: #16875e;
+        --success-bg: #eaf8f1;
+        --danger: #d14343;
+        --danger-bg: #fff0f0;
+        --warning: #a56800;
+        --warning-bg: #fff7dd;
+        --info: #2563eb;
+        --info-bg: #edf4ff;
+        --ring: rgba(24, 24, 27, 0.14);
+        --radius: 10px;
+        --shadow:
+          0 1px 2px rgba(16, 24, 40, 0.04),
+          0 1px 1px rgba(16, 24, 40, 0.03);
+        --font-sans:
+          "Public Sans", Inter, ui-sans-serif, system-ui, -apple-system,
+          BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        overflow-x: hidden;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: var(--font-sans);
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button,
+      select {
+        cursor: pointer;
+      }
+
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: none;
+        border-color: #b9bbc1;
+        box-shadow: 0 0 0 3px var(--ring);
+      }
+
+      svg {
+        display: block;
+      }
+
+      .app-header {
+        position: fixed;
+        z-index: 40;
+        inset: 0 0 auto 0;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 0 16px;
+        border-bottom: 1px solid var(--border-subtle);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+      }
+
+      .header-left,
+      .header-right,
+      .header-links,
+      .avatar,
+      .search-box {
+        display: flex;
+        align-items: center;
+      }
+
+      .header-left {
+        min-width: 34px;
+        gap: 14px;
+      }
+
+      .header-right {
+        gap: 12px;
+      }
+
+      .header-links {
+        gap: 20px;
+      }
+
+      .header-links a {
+        color: #4d4d52;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .header-links a:hover {
+        color: var(--foreground);
+      }
+
+      .icon-button {
+        width: 30px;
+        height: 30px;
+        display: inline-grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #3f3f46;
+      }
+
+      .icon-button:hover {
+        background: var(--accent);
+      }
+
+      .icon-button .icon {
+        width: 17px;
+        height: 17px;
+      }
+
+      .search-box {
+        width: 226px;
+        height: 32px;
+        gap: 7px;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--muted-foreground);
+      }
+
+      .search-box input {
+        min-width: 0;
+        flex: 1;
+        padding: 0;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: var(--foreground);
+      }
+
+      .search-box kbd {
+        padding: 2px 5px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        background: #fafafa;
+        color: #77777e;
+        font-size: 10px;
+        line-height: 1;
+      }
+
+      .avatar {
+        width: 26px;
+        height: 26px;
+        justify-content: center;
+        border-radius: 50%;
+        background: #b8d964;
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .sidebar {
+        position: fixed;
+        z-index: 30;
+        inset: 48px auto 0 0;
+        width: 176px;
+        overflow-y: auto;
+        padding: 12px 9px 22px;
+        border-right: 1px solid var(--border-subtle);
+        background: var(--sidebar);
+      }
+
+      .nav-section + .nav-section {
+        margin-top: 18px;
+      }
+
+      .nav-label {
+        margin: 0 8px 7px;
+        color: #9a9aa1;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .nav-item {
+        width: 100%;
+        min-height: 31px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 2px 0;
+        padding: 6px 9px;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: #202024;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .nav-item:hover {
+        background: #f1f1f2;
+      }
+
+      .nav-item.active {
+        background: var(--sidebar-accent);
+        color: #121214;
+        font-weight: 650;
+      }
+
+      .nav-item .icon {
+        width: 17px;
+        height: 17px;
+        flex: none;
+        stroke-width: 1.9;
+      }
+
+      .nav-item .chevron {
+        width: 15px;
+        height: 15px;
+        margin-left: auto;
+      }
+
+      .main {
+        min-height: 100vh;
+        margin-left: 176px;
+        padding: 64px 16px 24px;
+      }
+
+      .page-shell {
+        width: 100%;
+        max-width: 1680px;
+        margin: 0 auto;
+      }
+
+      .page-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+
+      .page-heading h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .page-heading p {
+        margin: 5px 0 0;
+        color: var(--muted-foreground);
+        font-size: 12px;
+      }
+
+      .prototype-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        color: var(--muted-foreground);
+        font-size: 11px;
+      }
+
+      .select-wrap {
+        position: relative;
+      }
+
+      .select-wrap::after {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        width: 6px;
+        height: 6px;
+        border-right: 1.5px solid #6b6b72;
+        border-bottom: 1.5px solid #6b6b72;
+        content: "";
+        pointer-events: none;
+        transform: translateY(-66%) rotate(45deg);
+      }
+
+      select {
+        height: 34px;
+        min-width: 224px;
+        appearance: none;
+        padding: 0 34px 0 11px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: var(--card);
+        color: var(--foreground);
+        box-shadow: var(--shadow);
+        font-size: 13px;
+      }
+
+      .filter-card,
+      .table-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.76);
+        box-shadow: var(--shadow);
+      }
+
+      .filter-card {
+        padding: 12px;
+      }
+
+      .filter-grid {
+        display: grid;
+        grid-template-columns: minmax(300px, 1.55fr) repeat(5, minmax(135px, 1fr));
+        gap: 8px;
+      }
+
+      .control {
+        position: relative;
+        min-width: 0;
+      }
+
+      .control > .icon,
+      .range-trigger > .icon {
+        position: absolute;
+        z-index: 1;
+        left: 10px;
+        top: 50%;
+        width: 15px;
+        height: 15px;
+        color: #7c7c84;
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
+      .control input,
+      .control select,
+      .range-trigger {
+        width: 100%;
+        height: 34px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: #fff;
+        color: var(--foreground);
+        font-size: 13px;
+      }
+
+      .control input {
+        padding: 0 11px;
+      }
+
+      .control.has-icon input,
+      .control.has-icon select {
+        padding-left: 33px;
+      }
+
+      .control input::placeholder {
+        color: #a1a1aa;
+      }
+
+      .control select {
+        min-width: 0;
+        box-shadow: none;
+      }
+
+      .range-trigger {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0 34px 0 33px;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .range-trigger::after {
+        position: absolute;
+        right: 12px;
+        width: 6px;
+        height: 6px;
+        border-right: 1.5px solid #6b6b72;
+        border-bottom: 1.5px solid #6b6b72;
+        content: "";
+        transform: translateY(-2px) rotate(45deg);
+      }
+
+      .date-panel {
+        position: absolute;
+        z-index: 25;
+        top: calc(100% + 6px);
+        left: 0;
+        width: 360px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: #fff;
+        box-shadow: 0 14px 32px rgba(24, 24, 27, 0.12);
+      }
+
+      .date-panel[hidden],
+      .columns-panel[hidden],
+      .detail-modal[hidden] {
+        display: none;
+      }
+
+      .date-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .field-label {
+        display: grid;
+        gap: 6px;
+        color: #6a6a72;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .date-inputs input {
+        height: 34px;
+        min-width: 0;
+        padding: 0 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+        font-size: 12px;
+      }
+
+      .date-panel-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 7px;
+        margin-top: 10px;
+      }
+
+      .filter-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 7px;
+        margin-top: 10px;
+      }
+
+      .result-meta {
+        margin-right: auto;
+        color: var(--muted-foreground);
+        font-size: 12px;
+      }
+
+      .button {
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 11px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font-size: 12px;
+        font-weight: 600;
+        transition:
+          background 120ms ease,
+          border-color 120ms ease;
+      }
+
+      .button:hover {
+        background: #303034;
+      }
+
+      .button.secondary {
+        border-color: var(--border);
+        background: #fff;
+        color: #3f3f46;
+      }
+
+      .button.secondary:hover {
+        background: #f6f6f7;
+      }
+
+      .button.ghost {
+        background: transparent;
+        color: #5e5e66;
+      }
+
+      .button.ghost:hover {
+        background: var(--accent);
+      }
+
+      .button .icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      .view-control {
+        position: relative;
+      }
+
+      .columns-panel {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 6px);
+        right: 0;
+        width: 190px;
+        padding: 7px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 12px 28px rgba(24, 24, 27, 0.12);
+      }
+
+      .columns-panel-title {
+        padding: 6px 7px 7px;
+        color: #777780;
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      .column-option {
+        min-height: 29px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 7px;
+        border-radius: 7px;
+        color: #3f3f46;
+        font-size: 12px;
+      }
+
+      .column-option:hover {
+        background: #f5f5f6;
+      }
+
+      .column-option input {
+        accent-color: #18181b;
+      }
+
+      .table-card {
+        min-height: 510px;
+        margin-top: 12px;
+        overflow: hidden;
+      }
+
+      .table-scroll {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        min-width: 1540px;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--border-subtle);
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      th {
+        height: 42px;
+        background: #fafbfc;
+        color: #3f3f46;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      th:nth-child(1) {
+        width: 150px;
+      }
+
+      th:nth-child(2) {
+        width: 180px;
+      }
+
+      th:nth-child(3) {
+        width: 160px;
+      }
+
+      th:nth-child(4) {
+        width: 130px;
+      }
+
+      th:nth-child(5) {
+        width: 90px;
+      }
+
+      th:nth-child(6) {
+        width: 190px;
+      }
+
+      th:nth-child(7) {
+        width: 135px;
+      }
+
+      th:nth-child(8) {
+        width: 150px;
+      }
+
+      th:nth-child(9) {
+        width: 115px;
+      }
+
+      th:nth-child(10) {
+        width: 110px;
+      }
+
+      th:nth-child(11) {
+        width: 118px;
+      }
+
+      td {
+        height: 58px;
+        background: rgba(255, 255, 255, 0.62);
+        color: #3f3f46;
+      }
+
+      tbody tr:hover td {
+        background: #fafafa;
+      }
+
+      .sortable {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sortable .icon {
+        width: 12px;
+        height: 12px;
+        color: #8c8c94;
+      }
+
+      .task-id {
+        max-width: 165px;
+        overflow: hidden;
+        color: #45454b;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .api-key {
+        color: #5f5f66;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .user-dot {
+        width: 25px;
+        height: 25px;
+        display: inline-grid;
+        flex: none;
+        place-items: center;
+        border-radius: 50%;
+        background: #f0e8ff;
+        color: #6f48b2;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1.25;
+        white-space: nowrap;
+      }
+
+      .badge::before {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: currentColor;
+        content: "";
+      }
+
+      .badge.success {
+        border-color: #c9eadb;
+        background: var(--success-bg);
+        color: var(--success);
+      }
+
+      .badge.failed {
+        border-color: #ffd4d4;
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+
+      .badge.queued {
+        border-color: #f3dda4;
+        background: var(--warning-bg);
+        color: var(--warning);
+      }
+
+      .badge.running {
+        border-color: #cfdefd;
+        background: var(--info-bg);
+        color: var(--info);
+      }
+
+      .mono-number {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .fee {
+        color: #18181b;
+        font-weight: 650;
+      }
+
+      .detail-button {
+        height: 28px;
+        padding-inline: 9px;
+      }
+
+      .detail-modal {
+        width: min(820px, calc(100vw - 32px));
+        max-height: min(760px, calc(100vh - 48px));
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fff;
+        color: var(--foreground);
+        box-shadow: 0 24px 64px rgba(24, 24, 27, 0.22);
+      }
+
+      .detail-modal::backdrop {
+        background: rgba(24, 24, 27, 0.42);
+        backdrop-filter: blur(2px);
+      }
+
+      .detail-modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px 20px 15px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .detail-modal-header h2 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+      }
+
+      .detail-modal-header p {
+        margin: 5px 0 0;
+        color: var(--muted-foreground);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 11px;
+      }
+
+      .dialog-close {
+        flex: none;
+      }
+
+      .detail-modal-body {
+        max-height: calc(min(760px, 100vh - 48px) - 72px);
+        overflow-y: auto;
+        padding: 18px 20px 20px;
+      }
+
+      .response-heading {
+        margin: 0 0 14px;
+        color: #334155;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .http-status-line {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 14px;
+        color: #334155;
+        font-size: 13px;
+      }
+
+      .http-status {
+        padding: 2px 6px;
+        border-radius: 5px;
+        background: #fff3ec;
+        color: #e65f16;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .http-status.error {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+
+      .response-code {
+        position: relative;
+        margin: 0;
+        padding: 18px 20px;
+        overflow: auto;
+        border: 1px solid var(--border-subtle);
+        border-radius: 10px;
+        background: #f7f7f8;
+        color: #3f3f46;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 12px;
+        line-height: 1.65;
+        tab-size: 2;
+        white-space: pre;
+      }
+
+      .empty-state {
+        min-height: 385px;
+        display: grid;
+        place-items: center;
+        padding: 48px 20px;
+        color: var(--muted-foreground);
+        text-align: center;
+      }
+
+      .empty-state[hidden] {
+        display: none;
+      }
+
+      .empty-icon {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        margin: 0 auto 12px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: #fafafa;
+        color: #6e6e76;
+      }
+
+      .empty-icon .icon {
+        width: 22px;
+        height: 22px;
+      }
+
+      .empty-state h2 {
+        margin: 0;
+        color: #333338;
+        font-size: 14px;
+      }
+
+      .empty-state p {
+        margin: 6px 0 0;
+        font-size: 12px;
+      }
+
+      .table-footer {
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 9px 12px;
+        background: #fff;
+        color: var(--muted-foreground);
+        font-size: 12px;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .page-button {
+        width: 30px;
+        height: 30px;
+        display: inline-grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+        color: #55555c;
+      }
+
+      .page-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .page-button .icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      .toast {
+        position: fixed;
+        z-index: 80;
+        right: 20px;
+        bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 13px;
+        border: 1px solid #d9d9dc;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 16px 36px rgba(24, 24, 27, 0.14);
+        color: #3f3f46;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+      }
+
+      .toast.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--success);
+      }
+
+      .mobile-menu-button {
+        display: none;
+      }
+
+      @media (max-width: 1180px) {
+        .filter-grid {
+          grid-template-columns: minmax(260px, 1.5fr) repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .header-links {
+          display: none;
+        }
+
+        .search-box {
+          width: 190px;
+        }
+
+        .filter-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .filter-grid .time-control {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .app-header {
+          padding: 0 10px;
+        }
+
+        .header-left {
+          min-width: 0;
+        }
+
+        .mobile-menu-button {
+          display: inline-grid;
+        }
+
+        .search-box {
+          display: none;
+        }
+
+        .sidebar {
+          transform: translateX(-100%);
+          transition: transform 180ms ease;
+        }
+
+        .sidebar.open {
+          box-shadow: 10px 0 28px rgba(24, 24, 27, 0.1);
+          transform: translateX(0);
+        }
+
+        .main {
+          margin-left: 0;
+          padding: 62px 10px 18px;
+        }
+
+        .page-heading {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .filter-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .filter-grid .time-control {
+          grid-column: auto;
+        }
+
+        .filter-actions {
+          align-items: stretch;
+        }
+
+        .result-meta {
+          width: 100%;
+        }
+
+        .filter-actions .button,
+        .view-control {
+          flex: 1;
+        }
+
+        .view-control .button {
+          width: 100%;
+        }
+
+        .date-panel {
+          position: fixed;
+          inset: auto 10px 16px;
+          width: auto;
+        }
+
+        .date-inputs {
+          grid-template-columns: 1fr;
+        }
+
+        .table-card {
+          min-height: 440px;
+        }
+
+        .detail-modal-header,
+        .detail-modal-body {
+          padding-inline: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      width="0"
+      height="0"
+      style="position: absolute"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <symbol id="i-menu" viewBox="0 0 24 24">
+        <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" />
+        <path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-bell" viewBox="0 0 24 24">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 8.5h18C21 15 18 15 18 8Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M10 20h4" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-flask" viewBox="0 0 24 24">
+        <path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M7 15h10" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-video" viewBox="0 0 24 24">
+        <rect x="3" y="6" width="14" height="12" rx="2" fill="none" stroke="currentColor" />
+        <path d="m17 10 4-2v8l-4-2" fill="none" stroke="currentColor" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-message" viewBox="0 0 24 24">
+        <path d="M4 5h16v12H8l-4 3V5Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-activity" viewBox="0 0 24 24">
+        <path d="M3 12h4l2-7 4 14 2-7h6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" />
+        <rect x="14" y="3" width="7" height="7" rx="1" fill="none" stroke="currentColor" />
+        <rect x="3" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" />
+        <rect x="14" y="14" width="7" height="7" rx="1" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-key" viewBox="0 0 24 24">
+        <circle cx="8" cy="15" r="5" fill="none" stroke="currentColor" />
+        <path d="m12 11 8-8m-2 2 2 2m-5 1 2 2" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-file" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6V3Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M14 3v5h5M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-list" viewBox="0 0 24 24">
+        <path d="m4 6 1.5 1.5L8 5M11 6h9M4 12l1.5 1.5L8 11M11 12h9M4 18l1.5 1.5L8 17M11 18h9" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24">
+        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M9 8h6M9 12h6M9 16h3" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-wallet" viewBox="0 0 24 24">
+        <path d="M4 6h14a2 2 0 0 1 2 2v11H4a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3h12" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M16 11h5v5h-5a2.5 2.5 0 0 1 0-5Z" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" />
+        <path d="M5 21a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-radio" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="2" fill="none" stroke="currentColor" />
+        <path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4M4.3 4.3a11 11 0 0 0 0 15.4M19.7 4.3a11 11 0 0 1 0 15.4" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-box" viewBox="0 0 24 24">
+        <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="m4 7.5 8 4.5 8-4.5M12 12v9" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <circle cx="9" cy="8" r="3" fill="none" stroke="currentColor" />
+        <path d="M3 20a6 6 0 0 1 12 0M16 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-ticket" viewBox="0 0 24 24">
+        <path d="M3 7h18v4a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4V7Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+        <path d="M13 9v7" fill="none" stroke="currentColor" stroke-dasharray="2 2" />
+      </symbol>
+      <symbol id="i-card" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" />
+        <path d="M3 10h18M7 15h4" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" />
+        <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.6h-4L10.4 6A8 8 0 0 0 8 7.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1A8 8 0 0 0 10.4 18l.3 2.6h4L15 18a8 8 0 0 0 2-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z" fill="none" stroke="currentColor" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" />
+        <path d="M8 3v4M16 3v4M3 10h18" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24">
+        <path d="M4 5h16M7 12h10M10 19h4" fill="none" stroke="currentColor" stroke-linecap="round" />
+      </symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24">
+        <path d="M4 5v5h5M5 10a8 8 0 1 1 2 8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-columns" viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" />
+        <path d="M9 4v16M15 4v16" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-sort" viewBox="0 0 24 24">
+        <path d="m8 8 4-4 4 4M16 16l-4 4-4-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-database" viewBox="0 0 24 24">
+        <ellipse cx="12" cy="5.5" rx="7" ry="3" fill="none" stroke="currentColor" />
+        <path d="M5 5.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6M5 11.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" fill="none" stroke="currentColor" />
+      </symbol>
+      <symbol id="i-left" viewBox="0 0 24 24">
+        <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-right" viewBox="0 0 24 24">
+        <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </symbol>
+    </svg>
+
+    <header class="app-header">
+      <div class="header-left">
+        <button
+          class="icon-button mobile-menu-button"
+          id="mobileMenuButton"
+          type="button"
+          aria-label="展开导航"
+          aria-expanded="false"
+        >
+          <svg class="icon"><use href="#i-menu"></use></svg>
+        </button>
+        <button class="icon-button" type="button" aria-label="收起侧边栏">
+          <svg class="icon" viewBox="0 0 24 24">
+            <rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor"></rect>
+            <path d="M9 5v14" fill="none" stroke="currentColor"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <nav class="header-links" aria-label="顶部导航">
+          <a href="#">主页</a>
+          <a href="#">控制台</a>
+          <a href="#">模型广场</a>
+          <a href="#">文档</a>
+        </nav>
+        <label class="search-box">
+          <svg width="15" height="15"><use href="#i-search"></use></svg>
+          <input type="search" placeholder="搜索" aria-label="全局搜索" />
+          <kbd>⌘ K</kbd>
+        </label>
+        <button class="icon-button" type="button" aria-label="通知">
+          <svg class="icon"><use href="#i-bell"></use></svg>
+        </button>
+        <div class="avatar" aria-label="当前用户 A">A</div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <nav aria-label="主导航">
+        <section class="nav-section">
+          <p class="nav-label">聊天</p>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-flask"></use></svg>
+            <span>游乐场</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-video"></use></svg>
+            <span>视频生成</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-message"></use></svg>
+            <span>聊天</span>
+            <svg class="chevron"><use href="#i-right"></use></svg>
+          </button>
+        </section>
+
+        <section class="nav-section">
+          <p class="nav-label">常规</p>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-activity"></use></svg>
+            <span>概览</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-grid"></use></svg>
+            <span>数据看板</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-key"></use></svg>
+            <span>API 密钥</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-file"></use></svg>
+            <span>使用日志</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-list"></use></svg>
+            <span>任务日志</span>
+          </button>
+          <button class="nav-item active" type="button" aria-current="page">
+            <svg class="icon"><use href="#i-receipt"></use></svg>
+            <span>模型账单</span>
+          </button>
+        </section>
+
+        <section class="nav-section">
+          <p class="nav-label">个人</p>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-wallet"></use></svg>
+            <span>钱包</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-user"></use></svg>
+            <span>个人资料</span>
+          </button>
+        </section>
+
+        <section class="nav-section">
+          <p class="nav-label">管理员</p>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-radio"></use></svg>
+            <span>渠道</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-box"></use></svg>
+            <span>模型</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-users"></use></svg>
+            <span>用户</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-ticket"></use></svg>
+            <span>兑换码</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-card"></use></svg>
+            <span>订阅管理</span>
+          </button>
+          <button class="nav-item" type="button">
+            <svg class="icon"><use href="#i-settings"></use></svg>
+            <span>系统设置</span>
+          </button>
+        </section>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="page-shell">
+        <div class="page-heading">
+          <div>
+            <h1>模型账单</h1>
+            <p>按模型查看任务 token 消耗与费用明细</p>
+          </div>
+          <span class="prototype-note">
+            <svg width="13" height="13"><use href="#i-database"></use></svg>
+            原型演示数据
+          </span>
+        </div>
+
+        <section class="filter-card" aria-label="模型账单筛选">
+          <div class="filter-grid">
+            <div class="control time-control">
+              <button
+                class="range-trigger"
+                id="rangeTrigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="datePanel"
+              >
+                <svg class="icon"><use href="#i-calendar"></use></svg>
+                <span id="rangeLabel">2026-07-29 00:00 ~ 2026-07-29 23:59</span>
+              </button>
+              <div class="date-panel" id="datePanel" hidden>
+                <div class="date-inputs">
+                  <label class="field-label">
+                    开始时间
+                    <input
+                      id="startTime"
+                      type="datetime-local"
+                      value="2026-07-29T00:00"
+                    />
+                  </label>
+                  <label class="field-label">
+                    结束时间
+                    <input
+                      id="endTime"
+                      type="datetime-local"
+                      value="2026-07-29T23:59"
+                    />
+                  </label>
+                </div>
+                <div class="date-panel-actions">
+                  <button
+                    class="button ghost"
+                    id="dateCancel"
+                    type="button"
+                  >
+                    取消
+                  </button>
+                  <button
+                    class="button"
+                    id="dateConfirm"
+                    type="button"
+                  >
+                    确定
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <label class="control">
+              <input id="taskIdInput" type="text" placeholder="任务 ID" />
+            </label>
+
+            <label class="control">
+              <input id="apiKeyInput" type="text" placeholder="API 密钥" />
+            </label>
+
+            <label class="control">
+              <input id="usernameInput" type="text" placeholder="用户名" />
+            </label>
+
+            <label class="control select-wrap">
+              <select id="modelFilterSelect" aria-label="模型">
+                <option value="">全部模型</option>
+                <option value="seedance2.0" selected>seedance2.0</option>
+              </select>
+            </label>
+
+            <label class="control select-wrap">
+              <select id="statusSelect" aria-label="任务状态">
+                <option value="">全部任务状态</option>
+                <option value="成功">成功</option>
+                <option value="失败">失败</option>
+                <option value="排队">排队</option>
+                <option value="执行中">执行中</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="filter-actions">
+            <span class="result-meta" id="resultMeta">共 6 条记录</span>
+            <button class="button secondary" id="resetButton" type="button">
+              <svg class="icon"><use href="#i-reset"></use></svg>
+              重置
+            </button>
+            <button class="button" id="searchButton" type="button">
+              <svg class="icon"><use href="#i-search"></use></svg>
+              搜索
+            </button>
+            <div class="view-control">
+              <button
+                class="button secondary"
+                id="viewButton"
+                type="button"
+                aria-expanded="false"
+                aria-controls="columnsPanel"
+              >
+                <svg class="icon"><use href="#i-columns"></use></svg>
+                查看
+              </button>
+              <div class="columns-panel" id="columnsPanel" hidden>
+                <div class="columns-panel-title">显示列</div>
+                <div id="columnOptions"></div>
+              </div>
+            </div>
+            <button class="button secondary" id="exportButton" type="button">
+              <svg class="icon"><use href="#i-download"></use></svg>
+              导出明细
+            </button>
+          </div>
+        </section>
+
+        <section class="table-card" aria-label="模型账单列表">
+          <div class="table-scroll" id="tableScroll">
+            <table id="billingTable">
+              <thead>
+                <tr>
+                  <th data-column="submittedAt">
+                    <span class="sortable">
+                      提交时间
+                      <svg class="icon"><use href="#i-sort"></use></svg>
+                    </span>
+                  </th>
+                  <th data-column="taskId">任务 ID</th>
+                  <th data-column="apiKey">API 密钥</th>
+                  <th data-column="username">用户</th>
+                  <th data-column="status">任务状态</th>
+                  <th data-column="specification">规格</th>
+                  <th data-column="model">模型</th>
+                  <th data-column="unitPrice">单价</th>
+                  <th data-column="tokens">token 消耗</th>
+                  <th data-column="fee">费用合计</th>
+                  <th data-column="apiDetail">视频接口详情</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <div>
+              <div class="empty-icon">
+                <svg class="icon"><use href="#i-database"></use></svg>
+              </div>
+              <h2>未找到模型账单</h2>
+              <p>请调整筛选条件后重新搜索。</p>
+            </div>
+          </div>
+
+          <footer class="table-footer">
+            <span id="footerMeta">显示 1–6 条，共 6 条</span>
+            <div class="pagination" aria-label="分页">
+              <button class="page-button" type="button" disabled aria-label="上一页">
+                <svg class="icon"><use href="#i-left"></use></svg>
+              </button>
+              <span>第 1 页 / 共 1 页</span>
+              <button class="page-button" type="button" disabled aria-label="下一页">
+                <svg class="icon"><use href="#i-right"></use></svg>
+              </button>
+            </div>
+          </footer>
+        </section>
+      </div>
+    </main>
+
+    <dialog
+      class="detail-modal"
+      id="detailModal"
+      aria-labelledby="detailModalTitle"
+    >
+      <div class="detail-modal-header">
+        <div>
+          <h2 id="detailModalTitle">视频接口详情</h2>
+          <p id="detailTaskId">任务 ID</p>
+        </div>
+        <button
+          class="icon-button dialog-close"
+          id="detailCloseButton"
+          type="button"
+          aria-label="关闭视频接口详情"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="detail-modal-body">
+        <h3 class="response-heading" id="detailResponseHeading">完成响应</h3>
+        <div class="http-status-line">
+          <span>HTTP 状态为</span>
+          <span class="http-status" id="detailHttpStatus">200 OK</span>
+          <span>：</span>
+        </div>
+        <pre class="response-code" id="detailResponseCode"></pre>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <svg class="icon"><use href="#i-check"></use></svg>
+      <span id="toastText">操作成功</span>
+    </div>
+
+    <script>
+      const allRows = [
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 12:18:36",
+          taskId: "sd20-20260729-a18f9c72",
+          apiKey: "sk-MbUv***********02xJ",
+          username: "zhangsan",
+          status: "成功",
+          specification: "1080p输入包含视频",
+          unitPrice: "¥51 / 百万 token",
+          tokens: 28400,
+          fee: "¥1.4484",
+          progress: 100,
+        },
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 11:46:12",
+          taskId: "sd20-20260729-95b731ee",
+          apiKey: "sk-R7Qa***********mP4K",
+          username: "chenxi",
+          status: "执行中",
+          specification: "720p输入不含视频",
+          unitPrice: "¥46 / 百万 token",
+          tokens: 16800,
+          fee: "¥0.7728",
+          progress: 63,
+        },
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 10:31:08",
+          taskId: "sd20-20260729-6ec843b0",
+          apiKey: "sk-Li9C***********8vT2",
+          username: "lisi",
+          status: "成功",
+          specification: "720p输入包含视频",
+          unitPrice: "¥51 / 百万 token",
+          tokens: 19200,
+          fee: "¥0.9792",
+          progress: 100,
+        },
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 09:54:47",
+          taskId: "sd20-20260729-40dc2a51",
+          apiKey: "sk-Wa5N***********j6Qe",
+          username: "wangwu",
+          status: "失败",
+          specification: "1080p输入不含视频",
+          unitPrice: "¥46 / 百万 token",
+          tokens: 0,
+          fee: "¥0.00",
+          progress: 17,
+        },
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 08:22:15",
+          taskId: "sd20-20260729-1bd0f49a",
+          apiKey: "sk-Zh3P***********7kLm",
+          username: "zhangsan",
+          status: "排队",
+          specification: "480p输入不含视频",
+          unitPrice: "¥46 / 百万 token",
+          tokens: 0,
+          fee: "¥0.00",
+          progress: 0,
+        },
+        {
+          model: "seedance2.0",
+          submittedAt: "2026-07-29 07:36:59",
+          taskId: "sd20-20260729-9e7a53c4",
+          apiKey: "sk-Su8D***********1nXr",
+          username: "sunqi",
+          status: "成功",
+          specification: "480p输入包含视频",
+          unitPrice: "¥51 / 百万 token",
+          tokens: 11200,
+          fee: "¥0.5712",
+          progress: 100,
+        },
+      ];
+
+      const columns = [
+        ["submittedAt", "提交时间"],
+        ["taskId", "任务 ID"],
+        ["apiKey", "API 密钥"],
+        ["username", "用户"],
+        ["status", "任务状态"],
+        ["specification", "规格"],
+        ["model", "模型"],
+        ["unitPrice", "单价"],
+        ["tokens", "token 消耗"],
+        ["fee", "费用合计"],
+        ["apiDetail", "视频接口详情"],
+      ];
+
+      const elements = {
+        taskId: document.querySelector("#taskIdInput"),
+        apiKey: document.querySelector("#apiKeyInput"),
+        username: document.querySelector("#usernameInput"),
+        model: document.querySelector("#modelFilterSelect"),
+        status: document.querySelector("#statusSelect"),
+        start: document.querySelector("#startTime"),
+        end: document.querySelector("#endTime"),
+        rangeLabel: document.querySelector("#rangeLabel"),
+        rangeTrigger: document.querySelector("#rangeTrigger"),
+        datePanel: document.querySelector("#datePanel"),
+        columnsPanel: document.querySelector("#columnsPanel"),
+        viewButton: document.querySelector("#viewButton"),
+        table: document.querySelector("#billingTable"),
+        tableScroll: document.querySelector("#tableScroll"),
+        tableBody: document.querySelector("#tableBody"),
+        emptyState: document.querySelector("#emptyState"),
+        resultMeta: document.querySelector("#resultMeta"),
+        footerMeta: document.querySelector("#footerMeta"),
+        toast: document.querySelector("#toast"),
+        toastText: document.querySelector("#toastText"),
+        detailModal: document.querySelector("#detailModal"),
+        detailTaskId: document.querySelector("#detailTaskId"),
+        detailResponseHeading: document.querySelector("#detailResponseHeading"),
+        detailHttpStatus: document.querySelector("#detailHttpStatus"),
+        detailResponseCode: document.querySelector("#detailResponseCode"),
+        sidebar: document.querySelector("#sidebar"),
+        mobileMenuButton: document.querySelector("#mobileMenuButton"),
+      };
+
+      let filteredRows = [];
+      let toastTimer;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function statusClass(status) {
+        const map = {
+          成功: "success",
+          失败: "failed",
+          排队: "queued",
+          执行中: "running",
+        };
+        return map[status] || "queued";
+      }
+
+      function userInitial(username) {
+        return username.slice(0, 2).toUpperCase();
+      }
+
+      function apiStatusValue(status) {
+        const values = {
+          成功: "completed",
+          失败: "failed",
+          排队: "queued",
+          执行中: "processing",
+        };
+        return values[status] || "unknown";
+      }
+
+      function buildApiResponse(row) {
+        const createdAt = Math.floor(
+          new Date(row.submittedAt.replace(" ", "T")).getTime() / 1000,
+        );
+        const durationByStatus = {
+          成功: 78,
+          失败: 21,
+          排队: 0,
+          执行中: 156,
+        };
+        const updatedAt = createdAt + durationByStatus[row.status];
+        const response = {
+          id: row.taskId,
+          object: "video",
+          model: "doubao-seedance-2-0-260128",
+          status: apiStatusValue(row.status),
+          progress: row.progress,
+          created_at: createdAt,
+          updated_at: updatedAt,
+        };
+
+        if (row.status === "成功") {
+          response.completed_at = updatedAt;
+          response.output = {
+            video_url: `https://your-domain.example/v1/videos/${row.taskId}/content`,
+            last_frame_url: `https://your-domain.example/v1/videos/${row.taskId}/last-frame`,
+          };
+          response.usage = {
+            completion_tokens: row.tokens,
+            total_tokens: row.tokens,
+          };
+        }
+
+        if (row.status === "执行中") {
+          response.usage = {
+            completion_tokens: row.tokens,
+            total_tokens: row.tokens,
+          };
+        }
+
+        if (row.status === "失败") {
+          response.error = {
+            code: "video_generation_failed",
+            message: "上游视频生成失败，请稍后重试",
+          };
+        }
+
+        return response;
+      }
+
+      function openApiDetail(taskId) {
+        const row = allRows.find((item) => item.taskId === taskId);
+        if (!row) return;
+
+        const headingByStatus = {
+          成功: "完成响应",
+          失败: "失败响应",
+          排队: "排队响应",
+          执行中: "执行中响应",
+        };
+        elements.detailTaskId.textContent = row.taskId;
+        elements.detailResponseHeading.textContent =
+          headingByStatus[row.status] || "接口响应";
+        elements.detailHttpStatus.textContent = "200 OK";
+        elements.detailHttpStatus.classList.remove("error");
+        elements.detailResponseCode.textContent = JSON.stringify(
+          buildApiResponse(row),
+          null,
+          2,
+        );
+        elements.detailModal.showModal();
+      }
+
+      function renderRows(rows) {
+        elements.tableBody.innerHTML = rows
+          .map(
+            (row) => `
+              <tr>
+                <td data-column="submittedAt" class="mono-number">${escapeHtml(row.submittedAt)}</td>
+                <td data-column="taskId"><div class="task-id" title="${escapeHtml(row.taskId)}">${escapeHtml(row.taskId)}</div></td>
+                <td data-column="apiKey"><span class="api-key">${escapeHtml(row.apiKey)}</span></td>
+                <td data-column="username">
+                  <div class="user-cell">
+                    <span class="user-dot">${escapeHtml(userInitial(row.username))}</span>
+                    <span>${escapeHtml(row.username)}</span>
+                  </div>
+                </td>
+                <td data-column="status"><span class="badge ${statusClass(row.status)}">${escapeHtml(row.status)}</span></td>
+                <td data-column="specification">${escapeHtml(row.specification)}</td>
+                <td data-column="model" class="mono-number">${escapeHtml(row.model)}</td>
+                <td data-column="unitPrice" class="mono-number">${escapeHtml(row.unitPrice)}</td>
+                <td data-column="tokens" class="mono-number">${row.tokens.toLocaleString("zh-CN")}</td>
+                <td data-column="fee" class="mono-number fee">${escapeHtml(row.fee)}</td>
+                <td data-column="apiDetail">
+                  <button
+                    class="button secondary detail-button"
+                    type="button"
+                    data-action="show-api-detail"
+                    data-task-id="${escapeHtml(row.taskId)}"
+                    aria-label="查看任务 ${escapeHtml(row.taskId)} 的视频接口详情"
+                  >
+                    查看
+                  </button>
+                </td>
+              </tr>
+            `,
+          )
+          .join("");
+
+        const hasRows = rows.length > 0;
+        elements.tableScroll.hidden = !hasRows;
+        elements.emptyState.hidden = hasRows;
+        elements.resultMeta.textContent = `共 ${rows.length} 条记录`;
+        elements.footerMeta.textContent = hasRows
+          ? `显示 1–${rows.length} 条，共 ${rows.length} 条`
+          : "显示 0 条，共 0 条";
+        applyColumnVisibility();
+      }
+
+      function normalizeDateTime(value, endOfMinute = false) {
+        if (!value) return null;
+        const normalized = value.replace("T", " ") + (endOfMinute ? ":59" : ":00");
+        return new Date(normalized.replace(" ", "T"));
+      }
+
+      function runSearch(showFeedback = true) {
+        const taskId = elements.taskId.value.trim().toLowerCase();
+        const apiKey = elements.apiKey.value.trim().toLowerCase();
+        const username = elements.username.value.trim().toLowerCase();
+        const start = normalizeDateTime(elements.start.value);
+        const end = normalizeDateTime(elements.end.value, true);
+
+        filteredRows = allRows.filter((row) => {
+          const submittedAt = new Date(row.submittedAt.replace(" ", "T"));
+          return (
+            (!taskId || row.taskId.toLowerCase().includes(taskId)) &&
+            (!apiKey || row.apiKey.toLowerCase().includes(apiKey)) &&
+            (!username || row.username.toLowerCase().includes(username)) &&
+            (!elements.model.value || row.model === elements.model.value) &&
+            (!elements.status.value || row.status === elements.status.value) &&
+            (!start || submittedAt >= start) &&
+            (!end || submittedAt <= end)
+          );
+        });
+
+        renderRows(filteredRows);
+        if (showFeedback) showToast(`已找到 ${filteredRows.length} 条账单记录`);
+      }
+
+      function updateRangeLabel() {
+        const start = elements.start.value.replace("T", " ");
+        const end = elements.end.value.replace("T", " ");
+        elements.rangeLabel.textContent = `${start} ~ ${end}`;
+      }
+
+      function resetFilters() {
+        elements.taskId.value = "";
+        elements.apiKey.value = "";
+        elements.username.value = "";
+        elements.model.value = "seedance2.0";
+        elements.status.value = "";
+        elements.start.value = "2026-07-29T00:00";
+        elements.end.value = "2026-07-29T23:59";
+        updateRangeLabel();
+        runSearch(false);
+        showToast("筛选条件已重置");
+      }
+
+      function showToast(message) {
+        window.clearTimeout(toastTimer);
+        elements.toastText.textContent = message;
+        elements.toast.classList.add("visible");
+        toastTimer = window.setTimeout(() => {
+          elements.toast.classList.remove("visible");
+        }, 2200);
+      }
+
+      function csvCell(value) {
+        return `"${String(value).replaceAll('"', '""')}"`;
+      }
+
+      function exportCsv() {
+        const headers = columns.map((column) => column[1]);
+        const lines = [
+          headers.map(csvCell).join(","),
+          ...filteredRows.map((row) =>
+            [
+              row.submittedAt,
+              row.taskId,
+              row.apiKey,
+              row.username,
+              row.status,
+              row.specification,
+              row.model,
+              row.unitPrice,
+              row.tokens,
+              row.fee,
+              apiStatusValue(row.status),
+            ]
+              .map(csvCell)
+              .join(","),
+          ),
+        ];
+        const blob = new Blob(["\uFEFF" + lines.join("\n")], {
+          type: "text/csv;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "seedance2.0-模型账单明细.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast(`已导出 ${filteredRows.length} 条明细`);
+      }
+
+      function buildColumnOptions() {
+        const root = document.querySelector("#columnOptions");
+        root.innerHTML = columns
+          .map(
+            ([key, label]) => `
+              <label class="column-option">
+                <input type="checkbox" data-column-toggle="${key}" checked />
+                <span>${label}</span>
+              </label>
+            `,
+          )
+          .join("");
+
+        root.addEventListener("change", applyColumnVisibility);
+      }
+
+      function applyColumnVisibility() {
+        document.querySelectorAll("[data-column-toggle]").forEach((checkbox) => {
+          const column = checkbox.dataset.columnToggle;
+          document
+            .querySelectorAll(`[data-column="${column}"]`)
+            .forEach((cell) => {
+              cell.hidden = !checkbox.checked;
+            });
+        });
+      }
+
+      function togglePanel(panel, trigger) {
+        const shouldOpen = panel.hidden;
+        elements.datePanel.hidden = true;
+        elements.columnsPanel.hidden = true;
+        elements.rangeTrigger.setAttribute("aria-expanded", "false");
+        elements.viewButton.setAttribute("aria-expanded", "false");
+        panel.hidden = !shouldOpen;
+        trigger.setAttribute("aria-expanded", String(shouldOpen));
+      }
+
+      elements.rangeTrigger.addEventListener("click", () => {
+        togglePanel(elements.datePanel, elements.rangeTrigger);
+      });
+
+      elements.viewButton.addEventListener("click", () => {
+        togglePanel(elements.columnsPanel, elements.viewButton);
+      });
+
+      document.querySelector("#dateCancel").addEventListener("click", () => {
+        elements.datePanel.hidden = true;
+        elements.rangeTrigger.setAttribute("aria-expanded", "false");
+      });
+
+      document.querySelector("#dateConfirm").addEventListener("click", () => {
+        if (elements.start.value > elements.end.value) {
+          showToast("结束时间不能早于开始时间");
+          return;
+        }
+        updateRangeLabel();
+        elements.datePanel.hidden = true;
+        elements.rangeTrigger.setAttribute("aria-expanded", "false");
+      });
+
+      document.querySelector("#searchButton").addEventListener("click", () => {
+        updateRangeLabel();
+        runSearch();
+      });
+
+      document.querySelector("#resetButton").addEventListener("click", resetFilters);
+      document.querySelector("#exportButton").addEventListener("click", exportCsv);
+
+      elements.tableBody.addEventListener("click", (event) => {
+        const button = event.target.closest('[data-action="show-api-detail"]');
+        if (!button) return;
+        openApiDetail(button.dataset.taskId);
+      });
+
+      document
+        .querySelector("#detailCloseButton")
+        .addEventListener("click", () => elements.detailModal.close());
+
+      elements.detailModal.addEventListener("click", (event) => {
+        if (event.target === elements.detailModal) {
+          elements.detailModal.close();
+        }
+      });
+
+      [elements.taskId, elements.apiKey, elements.username].forEach((input) => {
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") runSearch();
+        });
+      });
+
+      elements.mobileMenuButton.addEventListener("click", () => {
+        const isOpen = elements.sidebar.classList.toggle("open");
+        elements.mobileMenuButton.setAttribute("aria-expanded", String(isOpen));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (
+          !elements.datePanel.contains(event.target) &&
+          !elements.rangeTrigger.contains(event.target)
+        ) {
+          elements.datePanel.hidden = true;
+          elements.rangeTrigger.setAttribute("aria-expanded", "false");
+        }
+        if (
+          !elements.columnsPanel.contains(event.target) &&
+          !elements.viewButton.contains(event.target)
+        ) {
+          elements.columnsPanel.hidden = true;
+          elements.viewButton.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      buildColumnOptions();
+      updateRangeLabel();
+      runSearch(false);
+    </script>
+  </body>
+</html>
