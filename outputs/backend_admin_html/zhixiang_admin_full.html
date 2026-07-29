@@ -658,8 +658,17 @@
 
       if (!isConfig) return null;
 
+      const modalTitle = activeKey === "exchangeConfig" ? (
+        <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 24 }}>
+          <span style={{ flexShrink: 0 }}>{`${mode}${titleMap[activeKey]}`}</span>
+          <Typography.Text type="secondary" style={{ fontSize: 12, fontWeight: 400 }}>
+            商品兑换后有效期固定为7天，超出时间权益自动过期
+          </Typography.Text>
+        </div>
+      ) : `${mode}${titleMap[activeKey]}`;
+
       return (
-        <Modal title={`${mode}${titleMap[activeKey]}`} open={open} onCancel={onCancel} onOk={() => form.validateFields().then(onSave)} okText="确认" cancelText="取消" width={760} destroyOnClose>
+        <Modal title={modalTitle} open={open} onCancel={onCancel} onOk={() => form.validateFields().then(onSave)} okText="确认" cancelText="取消" width={760} destroyOnClose>
           <Form form={form} layout="vertical">
             {activeKey === "agreement" && (
               <Typography.Paragraph type="secondary" style={{ marginTop: 0 }}>
