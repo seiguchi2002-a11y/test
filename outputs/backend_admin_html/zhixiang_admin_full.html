@@ -652,7 +652,7 @@
       const isConfig = ["agreement", "exchangeConfig", "packageConfig"].includes(activeKey);
       const fields = {
         agreement: [["版本号","version","input"],["协议内容","content","rich"]],
-        exchangeConfig: [["商品名称","name","input"],["所需积分","points","number"],["使用次数","benefitTimes","number"],["库存","stock","number"],["有效期","validRange","input"],["排序","sort","number"],["购买须知","desc","textarea"]],
+        exchangeConfig: [["商品名称","name","input"],["所需积分","points","number"],["使用次数","benefitTimes","number"],["库存","stock","number"],["有效期（到期自动下架）","validRange","input"],["排序","sort","number"],["购买须知","desc","textarea"]],
         packageConfig: [["卡类型","type","select",options.cardType],["售价","price","number"],["可使用次数","times","number"],["有效天数","validDays","number"],["排序","sort","number"]]
       }[activeKey] || [];
 
@@ -684,7 +684,7 @@
                   rules={[{ required: ["title","type","version","content","status","name","points","benefitTimes","stock","price","times"].includes(name), message: `请填写${label}` }]}
                   style={["textarea", "rich"].includes(type) ? { gridColumn: "1 / span 2" } : undefined}
                 >
-                  {type === "input" && <Input placeholder={`请输入${label}`} />}
+                  {type === "input" && <Input placeholder={name === "validRange" ? "请输入有效期" : `请输入${label}`} />}
                   {type === "number" && <InputNumber min={name === "benefitTimes" ? 1 : 0} precision={name === "benefitTimes" ? 0 : undefined} style={{ width: "100%" }} placeholder={`请输入${label}`} />}
                   {type === "select" && <Select placeholder="请选择" options={selectOptions(opts)} />}
                   {type === "radio" && <Radio.Group options={opts.map(i => ({ label: i, value: i }))} />}
