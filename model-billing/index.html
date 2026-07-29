@@ -1427,8 +1427,6 @@
                 <option value="">全部任务状态</option>
                 <option value="成功">成功</option>
                 <option value="失败">失败</option>
-                <option value="排队">排队</option>
-                <option value="执行中">执行中</option>
               </select>
             </label>
           </div>
@@ -1575,12 +1573,12 @@
           taskId: "sd20-20260729-95b731ee",
           apiKey: "sk-R7Qa***********mP4K",
           username: "chenxi",
-          status: "执行中",
+          status: "成功",
           specification: "720p输入不含视频",
           unitPrice: "¥46 / 百万 token",
           tokens: 16800,
           fee: "¥0.7728",
-          progress: 63,
+          progress: 100,
         },
         {
           model: "seedance2.0",
@@ -1614,7 +1612,7 @@
           taskId: "sd20-20260729-1bd0f49a",
           apiKey: "sk-Zh3P***********7kLm",
           username: "zhangsan",
-          status: "排队",
+          status: "失败",
           specification: "480p输入不含视频",
           unitPrice: "¥46 / 百万 token",
           tokens: 0,
@@ -1696,10 +1694,8 @@
         const map = {
           成功: "success",
           失败: "failed",
-          排队: "queued",
-          执行中: "running",
         };
-        return map[status] || "queued";
+        return map[status] || "failed";
       }
 
       function userInitial(username) {
@@ -1710,8 +1706,6 @@
         const values = {
           成功: "completed",
           失败: "failed",
-          排队: "queued",
-          执行中: "processing",
         };
         return values[status] || "unknown";
       }
@@ -1723,8 +1717,6 @@
         const durationByStatus = {
           成功: 78,
           失败: 21,
-          排队: 0,
-          执行中: 156,
         };
         const updatedAt = createdAt + durationByStatus[row.status];
         const response = {
@@ -1749,13 +1741,6 @@
           };
         }
 
-        if (row.status === "执行中") {
-          response.usage = {
-            completion_tokens: row.tokens,
-            total_tokens: row.tokens,
-          };
-        }
-
         if (row.status === "失败") {
           response.error = {
             code: "video_generation_failed",
@@ -1773,8 +1758,6 @@
         const headingByStatus = {
           成功: "完成响应",
           失败: "失败响应",
-          排队: "排队响应",
-          执行中: "执行中响应",
         };
         elements.detailTaskId.textContent = row.taskId;
         elements.detailResponseHeading.textContent =
