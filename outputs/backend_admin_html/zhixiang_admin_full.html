@@ -320,7 +320,7 @@
       user: ["正常", "禁用"],
       productType: ["权益", "实物", "优惠券"],
       itemType: ["实物", "权益", "次数"],
-      floor: ["L1", "L2", "L3", "L4", "L5"],
+      floor: ["B1", "L1", "L2", "L3", "L4", "L5", "L6"],
       payMethod: ["微信支付"],
       cardPay: ["待支付", "已支付", "已取消", "已过期"],
       cardUse: ["使用中", "已用完", "已到期", "未启用"],
@@ -838,37 +838,70 @@
       );
     }
 
-    function StoreConfigModal({ open, record, onCancel, onSave }) {
+    function StoreConfigModal({ open, record, stores, onCancel, onSave }) {
       const [form] = Form.useForm();
       React.useEffect(() => {
-        if (open && record) {
+        if (open) {
+          form.resetFields();
           form.setFieldsValue({
-            timeRange: [toTimeValue(record.startTime), toTimeValue(record.endTime)],
-            overnight: !!record.overnight
+            storeName: record?.storeName || "",
+            floor: record?.floor,
+            berthNo: record?.berthNo || "",
+            timeRange: [toTimeValue(record?.startTime || "09:00"), toTimeValue(record?.endTime || "22:00")],
+            overnight: !!record?.overnight
           });
         }
       }, [open, record]);
+      const mode = record ? "编辑" : "新增";
       return (
         <Modal
-          title={`配置营业时间 - ${record?.storeName || ""}`}
+          title={`${mode}店铺`}
           open={open}
           onCancel={onCancel}
-          onOk={() => form.validateFields().then(values => onSave([record.id], formatBusinessHours(values.timeRange, values.overnight)))}
-          okText="确认配置"
+          onOk={() => form.validateFields().then(values => onSave({
+            ...values,
+            ...formatBusinessHours(values.timeRange, values.overnight)
+          }))}
+          okText="确认"
           cancelText="取消"
+          width={680}
           destroyOnClose
         >
           <Form form={form} layout="vertical">
-            <Descriptions column={1} size="small" style={{ marginBottom: 16 }}>
-              <Descriptions.Item label="店铺ID">{record?.storeId}</Descriptions.Item>
-              <Descriptions.Item label="楼层 / 铺位号">{record?.floor} / {record?.berthNo}</Descriptions.Item>
-            </Descriptions>
-            <Form.Item label="营业时间区间" name="timeRange" rules={[{ required: true, message: "请选择营业时间区间" }]}>
-              <TimePicker.RangePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
-            </Form.Item>
-            <Form.Item label="结束时间" name="overnight" valuePropName="checked">
-              <Switch checkedChildren="次日结束" unCheckedChildren="当日结束" />
-            </Form.Item>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <Form.Item label="店铺名称" name="storeName" rules={[{ required: true, message: "请输入店铺名称" }]}>
+                <Input placeholder="请输入店铺名称" />
+              </Form.Item>
+              <Form.Item label="楼层" name="floor" rules={[{ required: true, message: "请选择楼层" }]}>
+                <Select placeholder="请选择楼层" options={selectOptions(options.floor)} />
+              </Form.Item>
+              <Form.Item
+                label="铺位号"
+                name="berthNo"
+                extra="铺位号不可重复"
+                rules={[
+                  { required: true, message: "请输入铺位号" },
+                  {
+                    validator: (_, value) => {
+                      const duplicated = (stores || []).some(store =>
+                        store.berthNo === String(value || "").trim() && store.id !== record?.id
+                      );
+                      return duplicated ? Promise.reject(new Error("该铺位号已存在，请重新输入")) : Promise.resolve();
+                    }
+                  }
+                ]}
+              >
+                <Input placeholder="请输入铺位号" />
+              </Form.Item>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 180px", gap: 16 }}>
+              <Form.Item label="营业时间区间" name="timeRange" rules={[{ required: true, message: "请选择营业时间区间" }]}>
+                <TimePicker.RangePicker format="HH:mm" minuteStep={15} style={{ width: "100%" }} />
+              </Form.Item>
+              <Form.Item label="结束时间" name="overnight" valuePropName="checked">
+                <Switch checkedChildren="次日结束" unCheckedChildren="当日结束" />
+              </Form.Item>
+            </div>
             <Typography.Paragraph type="secondary">
               跨天场景示例：选择 08:00 - 02:00，并开启“次日结束”，列表将显示为 08:00 - 次日 02:00。
             </Typography.Paragraph>
@@ -955,7 +988,18 @@
           width: 260,
           fixed: "right",
           render: (_, record) => <ActionButtons activeKey={pageKey} record={record} onView={setDetail} onEdit={(r) => { setEditMode("编辑"); setEditRecord(r); setEditOpen(true); }} onAction={(name, r) => { setAction(name); setActionRecord(r); }} onDelete={(r) => {
-            Modal.confirm({ title: "确认删除？", content: "删除前请确认该数据未产生业务记录。", okText: "删除", cancelText: "取消", onOk: () => { setViewData(viewData.filter(item => item.id !== r.id)); message.success("删除成功"); } });
+            Modal.confirm({
+              title: "确认删除？",
+              content: pageKey === "storeList" ? `删除后，店铺“${r.storeName}”将不再显示。` : "删除前请确认该数据未产生业务记录。",
+              okText: "删除",
+              cancelText: "取消",
+              onOk: () => {
+                const nextData = viewData.filter(item => item.id !== r.id);
+                setViewData(nextData);
+                if (pageKey === "storeList") setData(data.filter(item => item.id !== r.id));
+                message.success("删除成功");
+              }
+            });
           }} />
         }
       ];
@@ -1017,6 +1061,25 @@
         setActionRecord(null);
         message.success("保存成功");
       };
+      const handleStoreSave = (values) => {
+        const { timeRange, ...storeValues } = values;
+        if (action === "addStore") {
+          const nextRecord = {
+            id: `ST-${Date.now()}`,
+            storeId: `S-${storeValues.floor}-${String(Date.now()).slice(-3)}`,
+            ...storeValues
+          };
+          setData([nextRecord, ...data]);
+          setViewData([nextRecord, ...viewData]);
+        } else {
+          const updateItem = (item) => item.id === actionRecord.id ? { ...item, ...storeValues } : item;
+          setData(data.map(updateItem));
+          setViewData(viewData.map(updateItem));
+        }
+        setAction(null);
+        setActionRecord(null);
+        message.success("保存成功");
+      };
 
       return (
         <>
@@ -1069,6 +1132,7 @@
               <Button icon={<ReloadOutlined />} onClick={() => setViewData(data)}>重置</Button>
               {!noExportPages.includes(pageKey) && <Button icon={<DownloadOutlined />} onClick={() => message.info("导出任务已创建")}>导出</Button>}
               {pageKey === "storeList" && <Button icon={<EditOutlined />} onClick={() => setBatchConfigOpen(true)}>批量配置</Button>}
+              {pageKey === "storeList" && <Button type="primary" icon={<PlusOutlined />} onClick={() => { setAction("addStore"); setActionRecord(null); }}>新增店铺</Button>}
             </Space>
             {canAdd && <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditMode("新增"); setEditRecord({ status: pageKey === "agreement" ? "停用" : "下架", content: "" }); setEditOpen(true); }}>{pageKey === "agreement" ? "新增协议" : pageKey === "exchangeConfig" ? "新增商品/权益" : "新增套餐"}</Button>}
           </div>
@@ -1089,8 +1153,8 @@
           <DetailDrawer activeKey={pageKey} record={detail} onClose={() => setDetail(null)} />
           <EditModal open={editOpen} mode={editMode} activeKey={pageKey} agreementTab={agreementTab} record={editRecord} onCancel={() => setEditOpen(false)} onSave={handleSave} />
           <StoreBatchConfigModal open={batchConfigOpen} stores={data} onCancel={() => setBatchConfigOpen(false)} onSave={handleStoreHoursSave} />
-          <StoreConfigModal open={action === "configStore"} record={actionRecord} onCancel={() => setAction(null)} onSave={handleStoreHoursSave} />
-          <ActionModal action={action === "configStore" ? null : action} record={actionRecord} onClose={() => setAction(null)} />
+          <StoreConfigModal open={["addStore", "editStore"].includes(action)} record={action === "editStore" ? actionRecord : null} stores={data} onCancel={() => setAction(null)} onSave={handleStoreSave} />
+          <ActionModal action={["addStore", "editStore"].includes(action) ? null : action} record={actionRecord} onClose={() => setAction(null)} />
         </>
       );
     }
@@ -1104,7 +1168,7 @@
         pointsOrder: [],
         exchangeConfig: [["编辑", () => onEdit(record)], [record.status === "上架" ? "下架" : "上架", () => message.success("保存成功")]],
         packageConfig: [["编辑", () => onEdit(record)], [record.status === "上架" ? "下架" : "上架", () => message.success("保存成功")]],
-        storeList: [["配置", () => onAction("configStore", record)]],
+        storeList: [["编辑", () => onAction("editStore", record)], ["删除", () => onDelete(record), "danger"]],
         robotTask: [["查看", () => onView(record)], ["处理异常", () => record.status === "异常" ? onAction("handleTask", record) : message.warning("只有异常任务可以进行异常处理")]],
         feedbackList: [["查看", () => onView(record)]],
         userList: []
