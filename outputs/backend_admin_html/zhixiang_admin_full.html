@@ -320,7 +320,8 @@
       user: ["正常", "禁用"],
       productType: ["权益", "实物", "优惠券"],
       itemType: ["实物", "权益", "次数"],
-      floor: ["B1", "L1", "L2", "L3", "L4", "L5", "L6"],
+      floor: ["B1", "L1", "L2", "L3", "L4", "L5"],
+      businessType: ["综合", "鞋包配饰", "国际妆品", "数码电子", "休闲娱乐", "儿童天地", "餐饮美食", "珠宝首饰", "生活服务", "其他零售"],
       payMethod: ["微信支付"],
       cardPay: ["待支付", "已支付", "已取消", "已过期"],
       cardUse: ["使用中", "已用完", "已到期", "未启用"],
@@ -447,16 +448,16 @@
         { id: "PCL-20260517001", cardId: "PK002", admin: "商品管理员D", operationType: "新增", operatedAt: "2026-05-17 09:45" }
       ],
       storeList: [
-        { id: "ST-001", storeId: "S-L1-001", storeName: "星巴克", floor: "L1", berthNo: "L1-101", businessHours: "08:00 - 22:00", startTime: "08:00", endTime: "22:00", overnight: false },
-        { id: "ST-002", storeId: "S-L1-002", storeName: "瑞幸咖啡", floor: "L1", berthNo: "L1-108", businessHours: "07:30 - 21:30", startTime: "07:30", endTime: "21:30", overnight: false },
-        { id: "ST-003", storeId: "S-L2-001", storeName: "麦当劳", floor: "L2", berthNo: "L2-206", businessHours: "08:00 - 次日 02:00", startTime: "08:00", endTime: "02:00", overnight: true },
-        { id: "ST-004", storeId: "S-L2-002", storeName: "肯德基", floor: "L2", berthNo: "L2-211", businessHours: "09:00 - 23:00", startTime: "09:00", endTime: "23:00", overnight: false },
-        { id: "ST-005", storeId: "S-L3-001", storeName: "喜茶", floor: "L3", berthNo: "L3-305", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
-        { id: "ST-006", storeId: "S-L3-002", storeName: "奈雪的茶", floor: "L3", berthNo: "L3-309", businessHours: "10:00 - 22:30", startTime: "10:00", endTime: "22:30", overnight: false },
-        { id: "ST-007", storeId: "S-L4-001", storeName: "海底捞", floor: "L4", berthNo: "L4-401", businessHours: "10:00 - 次日 03:00", startTime: "10:00", endTime: "03:00", overnight: true },
-        { id: "ST-008", storeId: "S-L4-002", storeName: "八合里", floor: "L4", berthNo: "L4-408", businessHours: "11:00 - 23:30", startTime: "11:00", endTime: "23:30", overnight: false },
-        { id: "ST-009", storeId: "S-L5-001", storeName: "优衣库", floor: "L5", berthNo: "L5-502", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
-        { id: "ST-010", storeId: "S-L5-002", storeName: "影院前台", floor: "L5", berthNo: "L5-518", businessHours: "09:30 - 次日 01:30", startTime: "09:30", endTime: "01:30", overnight: true }
+        { id: "ST-001", storeId: "S-L1-001", storeName: "星巴克", businessType: "餐饮美食", floor: "L1", berthNo: "L1-101", businessHours: "08:00 - 22:00", startTime: "08:00", endTime: "22:00", overnight: false },
+        { id: "ST-002", storeId: "S-L1-002", storeName: "瑞幸咖啡", businessType: "餐饮美食", floor: "L1", berthNo: "L1-108", businessHours: "07:30 - 21:30", startTime: "07:30", endTime: "21:30", overnight: false },
+        { id: "ST-003", storeId: "S-L2-001", storeName: "麦当劳", businessType: "餐饮美食", floor: "L2", berthNo: "L2-206", businessHours: "08:00 - 次日 02:00", startTime: "08:00", endTime: "02:00", overnight: true },
+        { id: "ST-004", storeId: "S-L2-002", storeName: "肯德基", businessType: "餐饮美食", floor: "L2", berthNo: "L2-211", businessHours: "09:00 - 23:00", startTime: "09:00", endTime: "23:00", overnight: false },
+        { id: "ST-005", storeId: "S-L3-001", storeName: "喜茶", businessType: "餐饮美食", floor: "L3", berthNo: "L3-305", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
+        { id: "ST-006", storeId: "S-L3-002", storeName: "奈雪的茶", businessType: "餐饮美食", floor: "L3", berthNo: "L3-309", businessHours: "10:00 - 22:30", startTime: "10:00", endTime: "22:30", overnight: false },
+        { id: "ST-007", storeId: "S-L4-001", storeName: "海底捞", businessType: "餐饮美食", floor: "L4", berthNo: "L4-401", businessHours: "10:00 - 次日 03:00", startTime: "10:00", endTime: "03:00", overnight: true },
+        { id: "ST-008", storeId: "S-L4-002", storeName: "八合里", businessType: "餐饮美食", floor: "L4", berthNo: "L4-408", businessHours: "11:00 - 23:30", startTime: "11:00", endTime: "23:30", overnight: false },
+        { id: "ST-009", storeId: "S-L5-001", storeName: "优衣库", businessType: "其他零售", floor: "L5", berthNo: "L5-502", businessHours: "10:00 - 22:00", startTime: "10:00", endTime: "22:00", overnight: false },
+        { id: "ST-010", storeId: "S-L5-002", storeName: "影院前台", businessType: "休闲娱乐", floor: "L5", berthNo: "L5-518", businessHours: "09:30 - 次日 01:30", startTime: "09:30", endTime: "01:30", overnight: true }
       ],
       robotTask: [
         { id: "RT-20260520001", taskNo: "RT20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", robotNo: "RB-08", pickup: "星巴克", delivery: "服务台", status: "执行中", createdAt: "2026-05-20 10:24", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-", abnormal: "否", handleStatus: "-", handleResult: "-", refundComp: "-" },
@@ -511,7 +512,7 @@
       exchangeConfigLog: [["商品ID", "productId", "input"], ["管理员", "admin", "input"], ["操作类型", "operationType", "select", options.exchangeOperationType], ["时间区间", "operatedAt", "range"]],
       packageConfig: [["卡ID", "cardId", "input"], ["卡类型", "type", "select", options.cardType], ["状态", "status", "select", options.shelf], ["有效期", "valid", "range"]],
       packageConfigLog: [["卡ID", "cardId", "input"], ["管理员", "admin", "input"], ["操作类型", "operationType", "select", options.packageOperationType], ["时间区间", "operatedAt", "range"]],
-      storeList: [["店铺名称", "storeName", "input"], ["店铺ID", "storeId", "input"], ["楼层", "floor", "select", options.floor]],
+      storeList: [["店铺名称", "storeName", "input"], ["店铺ID", "storeId", "input"], ["楼层", "floor", "select", options.floor], ["业态", "businessType", "select", options.businessType]],
       robotTask: [["任务号", "taskNo", "input"], ["订单号", "orderNo", "input"], ["机器人编号", "robotNo", "input"], ["取件点", "pickup", "input"], ["送达点", "delivery", "input"], ["任务状态", "status", "select", options.robotTask], ["创建时间", "createdAt", "range"]],
       feedbackList: [["手机号", "phone", "input"], ["提交时间", "submittedAt", "range"]],
       userList: [["手机号", "phone", "input"], ["注册时间", "registeredAt", "range"], ["最近登录时间", "lastLoginAt", "range"]]
@@ -529,7 +530,7 @@
       exchangeConfigLog: [["商品ID","productId"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
       packageConfig: [["卡ID","cardId"],["类型","type"],["售价","price","money"],["次数","times"],["有效天数","validDays"],["上下架状态","status","tag"],["排序","sort"],["创建时间","createdAt"]],
       packageConfigLog: [["卡ID","cardId"],["管理员","admin"],["操作类型","operationType"],["操作时间","operatedAt"]],
-      storeList: [["店铺ID","storeId"],["店铺名称","storeName"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]],
+      storeList: [["店铺ID","storeId"],["店铺名称","storeName"],["业态","businessType"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]],
       robotTask: [["任务号","taskNo"],["订单号","orderNo"],["机器人","robotNo"],["取件点","pickup"],["送达点","delivery"],["任务状态","status","tag"],["创建时间","createdAt"],["完成时间","finishAt"],["异常原因","exception"],["退款 / 补偿结果","refundComp"]],
       feedbackList: [["昵称","user"],["内容","content","ellipsis"],["图片","images","previewImage"],["手机号","contact"],["提交时间","submittedAt"]],
       userList: [["昵称","nickname"],["手机号","phone"],["注册时间","registeredAt"],["最近登录时间","lastLoginAt"]]
@@ -543,7 +544,7 @@
       pointsOrder: [["基本信息", [["兑换单号","exchangeNo"],["用户","user"],["手机号","phone"],["商品名称","productName"],["商品类型","productType"],["消耗积分","points"],["兑换数量","quantity"],["使用状态","useStatus"],["使用时间","usedAt"],["失效时间","expiredAt"],["兑换状态","exchangeStatus"],["兑换时间","exchangeAt"]]], ["发放信息", [["权益类型","grantType"],["发放数量","grantQuantity"],["发放状态","grantStatus"],["发放时间","grantAt"],["失败原因","failReason"]]], ["积分处理信息", [["是否已扣积分","deducted"],["是否已返还积分","returned"],["返还时间","returnAt"],["返还原因","returnReason"]]]],
       exchangeConfig: [["商品 / 权益信息", [["商品ID","productId"],["名称","name"],["商品类型","type"],["所需积分","points"],["兑换权益次数","benefitTimes"],["库存","stock"],["状态","status"],["有效期","validRange"],["排序","sort"],["商品说明","desc"]]]],
       packageConfig: [["套餐信息", [["卡ID","cardId"],["名称","name"],["类型","type"],["售价","price"],["次数","times"],["有效期","valid"],["上下架状态","status"],["排序","sort"],["套餐说明","desc"]]]],
-      storeList: [["店铺信息", [["店铺ID","storeId"],["店铺名称","storeName"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]]]],
+      storeList: [["店铺信息", [["店铺ID","storeId"],["店铺名称","storeName"],["业态","businessType"],["楼层","floor"],["铺位号","berthNo"],["营业时间","businessHours"]]]],
       robotTask: [["基本信息", [["任务号","taskNo"],["订单号","orderNo"],["用户","user"],["手机号","phone"],["机器人编号","robotNo"],["取件点","pickup"],["送达点","delivery"],["任务状态","status"],["创建时间","createdAt"],["开始时间","startAt"],["完成时间","finishAt"]]], ["异常信息", [["是否异常","abnormal"],["异常原因","exception"],["异常时间","createdAt"],["处理状态","handleStatus"],["处理结果","handleResult"],["处理备注","refundComp"]]]],
       feedbackList: [["反馈详情", [["反馈ID","feedbackId"],["用户","user"],["手机号","phone"],["联系方式","contact"],["反馈内容","content","rich"],["反馈图片","images","previewImage"],["提交时间","submittedAt"]]]],
       userList: [["基本信息", [["用户ID","userId"],["微信OpenID","openid"],["昵称","nickname"],["手机号","phone"],["注册时间","registeredAt"],["最近登录时间","lastLoginAt"],["状态","status"]]], ["权益信息", [["当前积分","points"],["可用配送权益次数","deliveryRights"],["已购买特惠卡数量","cardCount"],["已兑换商品数量","exchangeCount"]]], ["订单记录入口", [["快捷入口","links","links"]]]]
@@ -845,6 +846,7 @@
           form.resetFields();
           form.setFieldsValue({
             storeName: record?.storeName || "",
+            businessType: record?.businessType,
             floor: record?.floor,
             berthNo: record?.berthNo || "",
             timeRange: [toTimeValue(record?.startTime || "09:00"), toTimeValue(record?.endTime || "22:00")],
@@ -871,6 +873,9 @@
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <Form.Item label="店铺名称" name="storeName" rules={[{ required: true, message: "请输入店铺名称" }]}>
                 <Input placeholder="请输入店铺名称" />
+              </Form.Item>
+              <Form.Item label="业态" name="businessType" rules={[{ required: true, message: "请选择业态" }]}>
+                <Select placeholder="请选择业态" options={selectOptions(options.businessType)} />
               </Form.Item>
               <Form.Item label="楼层" name="floor" rules={[{ required: true, message: "请选择楼层" }]}>
                 <Select placeholder="请选择楼层" options={selectOptions(options.floor)} />
