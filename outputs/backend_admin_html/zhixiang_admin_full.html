@@ -333,11 +333,7 @@
     };
 
     const selectOptions = (arr) => arr.map(item => ({ label: item, value: item }));
-    const isRefundDisabled = (record) => {
-      const disabledPayStatuses = ["待支付", "已退款", "支付失败", "已取消"];
-      const disabledDeliveryStatuses = ["待取件", "配送中", "已完成", "已取消"];
-      return disabledPayStatuses.includes(record?.payStatus) || disabledDeliveryStatuses.includes(record?.deliveryStatus);
-    };
+    const isRefundDisabled = (record) => !(record?.payStatus === "已支付" && record?.deliveryStatus === "异常");
     const isCardCompensateDisabled = (record) => ["已取消", "已过期"].includes(record?.payStatus);
 
     const mock = {
@@ -381,22 +377,20 @@
         { id: "AC-GUIDE-004", nickname: "严二", phone: "18855557777", type: "操作指南", title: "机器人取件操作指南", version: "v1.0", agreedAt: "2026-03-06 09:24", content: "用户当时同意的操作指南 v1.0 正文快照。" }
       ],
       deliveryOrder: [
-        { id: "DO-20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", pickup: "星巴克", delivery: "服务台", pickupCode: "2468", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21", paidAt: "2026-05-20 10:22", payMethod: "1次权益", robotNo: "RB-08", floor: "3F", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-" },
-        { id: "DO-20260520002", orderNo: "DO20260520002", user: "李四", phone: "13987654321", pickup: "瑞幸咖啡", delivery: "影院前台", pickupCode: "0912", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "异常", createdAt: "2026-05-20 09:42", paidAt: "2026-05-20 09:43", payMethod: "1次权益", robotNo: "RB-03", floor: "", startAt: "2026-05-20 09:45", finishAt: "-", exception: "路线异常" },
+        { id: "DO-20260520001", orderNo: "DO20260520001", user: "张三", phone: "13812345678", pickup: "星巴克", delivery: "优衣库", pickupCode: "2468", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "配送中", createdAt: "2026-05-20 10:21", paidAt: "2026-05-20 10:22", payMethod: "1次权益", robotNo: "RB-08", floor: "3F", startAt: "2026-05-20 10:26", finishAt: "-", exception: "-" },
+        { id: "DO-20260520002", orderNo: "DO20260520002", user: "李四", phone: "13987654321", pickup: "瑞幸咖啡", delivery: "八合里", pickupCode: "0912", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-20 09:42", paidAt: "2026-05-20 09:43", payMethod: "1次权益", robotNo: "RB-03", floor: "", startAt: "2026-05-20 09:45", finishAt: "-", exception: "路线异常" },
         { id: "DO-20260520003", orderNo: "DO20260520003", user: "王五", phone: "13666668888", pickup: "麦当劳", delivery: "八合里", pickupCode: "5731", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-20 12:18", paidAt: "2026-05-20 12:19", payMethod: "1次权益", robotNo: "RB-06", floor: "", startAt: "2026-05-20 12:22", finishAt: "2026-05-20 12:35", exception: "-" },
         { id: "DO-20260520004", orderNo: "DO20260520004", user: "赵六", phone: "13511112222", pickup: "肯德基", delivery: "优衣库", pickupCode: "8842", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "待取件", createdAt: "2026-05-20 13:05", paidAt: "2026-05-20 13:06", payMethod: "1次权益", robotNo: "RB-01", floor: "1F", startAt: "-", finishAt: "-", exception: "-" },
-        { id: "DO-20260520005", orderNo: "DO20260520005", user: "陈七", phone: "13722223333", pickup: "喜茶", delivery: "B1 停车场入口", pickupCode: "6609", amount: "1次权益", amountBenefit: "1次权益", payStatus: "待支付", deliveryStatus: "-", createdAt: "2026-05-20 13:28", paidAt: "-", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "-" },
+        { id: "DO-20260520005", orderNo: "DO20260520005", user: "陈七", phone: "13722223333", pickup: "喜茶", delivery: "海底捞", pickupCode: "6609", amount: "1次权益", amountBenefit: "1次权益", payStatus: "待支付", deliveryStatus: "-", createdAt: "2026-05-20 13:28", paidAt: "-", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "-" },
         { id: "DO-20260520006", orderNo: "DO20260520006", user: "孙八", phone: "13233334444", pickup: "奈雪的茶", delivery: "海底捞", pickupCode: "3086", amount: "1次权益", amountBenefit: "1次权益", payStatus: "支付失败", deliveryStatus: "已取消", createdAt: "2026-05-20 14:12", paidAt: "-", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "支付失败未生成任务" },
-        { id: "DO-20260519007", orderNo: "DO20260519007", user: "周九", phone: "13155556666", pickup: "海底捞", delivery: "服务台", pickupCode: "7355", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-19 18:26", paidAt: "2026-05-19 18:27", payMethod: "1次权益", robotNo: "RB-05", floor: "", startAt: "2026-05-19 18:31", finishAt: "-", exception: "机器人舱门异常" },
-        { id: "DO-20260519008", orderNo: "DO20260519008", user: "吴十", phone: "13377778888", pickup: "八合里", delivery: "影院前台", pickupCode: "1930", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已取消", deliveryStatus: "已取消", createdAt: "2026-05-19 11:15", paidAt: "-", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "用户取消订单" },
+        { id: "DO-20260519007", orderNo: "DO20260519007", user: "周九", phone: "13155556666", pickup: "海底捞", delivery: "瑞幸咖啡", pickupCode: "7355", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "异常", createdAt: "2026-05-19 18:26", paidAt: "2026-05-19 18:27", payMethod: "1次权益", robotNo: "RB-05", floor: "", startAt: "2026-05-19 18:31", finishAt: "-", exception: "机器人舱门异常" },
+        { id: "DO-20260519008", orderNo: "DO20260519008", user: "吴十", phone: "13377778888", pickup: "八合里", delivery: "实时跟随", pickupCode: "1930", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已取消", deliveryStatus: "已取消", createdAt: "2026-05-19 11:15", paidAt: "-", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "用户取消订单" },
         { id: "DO-20260518009", orderNo: "DO20260518009", user: "郑一", phone: "13488889999", pickup: "优衣库", delivery: "星巴克", pickupCode: "4620", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "已完成", createdAt: "2026-05-18 16:02", paidAt: "2026-05-18 16:03", payMethod: "1次权益", robotNo: "RB-02", floor: "", startAt: "2026-05-18 16:06", finishAt: "2026-05-18 16:20", exception: "-" },
-        { id: "DO-20260518010", orderNo: "DO20260518010", user: "冯二", phone: "13799990000", pickup: "服务台", delivery: "麦当劳", pickupCode: "8194", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已退款", deliveryStatus: "已取消", createdAt: "2026-05-18 09:36", paidAt: "2026-05-18 09:37", payMethod: "1次权益", robotNo: "RB-04", floor: "", startAt: "-", finishAt: "-", exception: "人工取消并退款" }
+        { id: "DO-20260518010", orderNo: "DO20260518010", user: "冯二", phone: "13799990000", pickup: "喜茶", delivery: "麦当劳", pickupCode: "8194", amount: "1次权益", amountBenefit: "1次权益", payStatus: "已支付", deliveryStatus: "异常", createdAt: "2026-05-18 09:36", paidAt: "2026-05-18 09:37", payMethod: "1次权益", robotNo: "-", floor: "", startAt: "-", finishAt: "-", exception: "任务启动失败" }
       ],
       deliveryOrderLog: [
         { id: "DOL-20260520001", orderNo: "DO20260520002", admin: "运营管理员A", refundType: "1次权益", operatedAt: "2026-05-20 10:18" },
         { id: "DOL-20260519001", orderNo: "DO20260519007", admin: "客服主管B", refundType: "1次权益", operatedAt: "2026-05-19 18:42" },
-        { id: "DOL-20260518001", orderNo: "DO20260518010", admin: "运营管理员C", refundType: "1次权益", operatedAt: "2026-05-18 09:48" },
-        { id: "DOL-20260516001", orderNo: "DO20260516010", admin: "客服专员D", refundType: "1次权益", operatedAt: "2026-05-16 17:46" }
       ],
       cardOrder: [
         { id: "CO-20260519001", orderNo: "CO20260519001", user: "王五", phone: "13666668888", cardName: "送餐取物月卡", cardType: "月卡", amount: "49.90", payMethod: "微信支付", payStatus: "已支付", totalTimes: 20, usedTimes: 4, remainTimes: 16, startAt: "2026-05-19", expireAt: "2026-06-18", useStatus: "使用中", createdAt: "2026-05-19 14:10", paidAt: "2026-05-19 14:11", records: ["用户购买月卡", "支付成功", "权益发放 20 次"] },
@@ -714,7 +708,7 @@
       );
     }
 
-    function ActionModal({ action, record, onClose }) {
+    function ActionModal({ action, record, onClose, onConfirm }) {
       const [form] = Form.useForm();
       if (!action) return null;
       const title = {
@@ -731,7 +725,7 @@
         disableUser: "禁用用户"
       }[action] || "操作处理";
       return (
-        <Modal title={title} open={!!action} onCancel={onClose} onOk={() => form.validateFields().then(() => { message.success("保存成功"); onClose(); })} okText="确认" cancelText="取消" destroyOnClose>
+        <Modal title={title} open={!!action} onCancel={onClose} onOk={() => form.validateFields().then(values => { onConfirm?.(action, record, values); message.success(action === "refund" ? "退款成功" : "保存成功"); onClose(); })} okText="确认" cancelText="取消" destroyOnClose>
           <Form form={form} layout="vertical">
             {action === "refund" && <Form.Item label="退回权益" name="refundValue" initialValue="1次权益"><Input disabled /></Form.Item>}
             {action === "handleTask" && <Form.Item label="退款金额" name="refundAmount"><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>}
@@ -1117,6 +1111,22 @@
         setActionRecord(null);
         message.success("保存成功");
       };
+      const handleActionConfirm = (actionType, record) => {
+        if (actionType !== "refund" || !record) return;
+        const operatedAt = dayjs().format("YYYY-MM-DD HH:mm");
+        const updateOrder = (item) => item.id === record.id ? { ...item, payStatus: "已退款" } : item;
+        mock.deliveryOrder = mock.deliveryOrder.map(updateOrder);
+        mock.deliveryOrderLog = [{
+          id: `DOL-${Date.now()}`,
+          orderNo: record.orderNo,
+          admin: "当前管理员",
+          refundType: record.amountBenefit || "1次权益",
+          operatedAt
+        }, ...mock.deliveryOrderLog];
+        setData(prev => prev.map(updateOrder));
+        setViewData(prev => prev.map(updateOrder));
+        setDetail(prev => prev?.id === record.id ? { ...prev, payStatus: "已退款" } : prev);
+      };
 
       return (
         <>
@@ -1191,7 +1201,7 @@
           <EditModal open={editOpen} mode={editMode} activeKey={pageKey} agreementTab={agreementTab} record={editRecord} onCancel={() => setEditOpen(false)} onSave={handleSave} />
           <StoreBatchConfigModal open={batchConfigOpen} stores={data} onCancel={() => setBatchConfigOpen(false)} onSave={handleStoreHoursSave} />
           <StoreConfigModal open={["addStore", "editStore"].includes(action)} record={action === "editStore" ? actionRecord : null} stores={data} onCancel={() => setAction(null)} onSave={handleStoreSave} />
-          <ActionModal action={["addStore", "editStore"].includes(action) ? null : action} record={actionRecord} onClose={() => setAction(null)} />
+          <ActionModal action={["addStore", "editStore"].includes(action) ? null : action} record={actionRecord} onClose={() => setAction(null)} onConfirm={handleActionConfirm} />
         </>
       );
     }
