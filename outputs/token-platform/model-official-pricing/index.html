@@ -1853,7 +1853,7 @@
           <h3>模型信息</h3>
           <div class="mvp-field-grid">
             <label class="mvp-field"><span class="mvp-label">模型名称 *</span><input class="mvp-control" id="mvpModelName" placeholder="输入模型名称" /><span class="mvp-hint" id="mvpNameHint">模型被引用后不能改名或删除。</span></label>
-            <label class="mvp-field"><span class="mvp-label">模型分类 *</span><select class="mvp-select" id="mvpModelCategory"><option value="">请选择</option><option>文本</option><option>图像</option><option>视频</option><option>音频</option><option>多模态</option></select></label>
+            <label class="mvp-field"><span class="mvp-label">模型分类 *</span><select class="mvp-select" id="mvpModelCategory"><option value="">请选择</option><option>文本</option><option>视频</option></select></label>
           </div>
           <div class="mvp-switch-row"><div><strong>在模型广场展示</strong><div class="mvp-sub">官方价格完整并保存成功后，模型才会在模型广场展示。</div></div><button class="mvp-switch" id="mvpPlazaSwitch" type="button" aria-checked="false"></button></div>
         </section>
@@ -1899,7 +1899,7 @@
           <h3>模板信息</h3>
           <div class="mvp-field-grid">
             <label class="mvp-field"><span class="mvp-label">模板名称 *</span><input class="mvp-control template-editable" id="mvpTemplateName" value="Seedance 视频规格计价" /></label>
-            <label class="mvp-field"><span class="mvp-label">用量计算规则 *</span><select class="mvp-select template-editable" id="mvpUsageRule"><option>按实际输出Token计算</option><option>按请求次数计算</option></select><span class="mvp-hint" id="mvpDerivedUnitHint">计费单位自动设为积分/百万Token，全部规格统一使用。</span></label>
+            <label class="mvp-field"><span class="mvp-label">用量计算规则 *</span><select class="mvp-select template-editable" id="mvpUsageRule"><option>按实际输出Token计算</option></select><span class="mvp-hint" id="mvpDerivedUnitHint">计费单位固定为积分/百万Token，全部规格统一使用。</span></label>
           </div>
         </section>
         <section class="mvp-section"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><h3>规格规则</h3><p class="mvp-section-copy">每个规格可以添加多个条件；同一规格内的条件全部满足时才会命中。</p></div><button class="mvp-button template-editable" id="mvpAddRule">＋ 添加规格</button></div><div id="mvpRuleList"></div><div class="mvp-callout">支持请求体参数、请求头和平台时间。没有规格命中或同时命中多个规格时，进入计费异常。</div></section>
@@ -3149,8 +3149,8 @@ when(param("service_tier") == "priority") * 2</textarea><span class="field-hint"
           return models.filter((model) => model.mode === 'spec' && model.templateId === templateId).length
         }
 
-        function unitForUsage(usage) {
-          return usage === '按请求次数计算' ? '积分/次' : '积分/百万Token'
+        function unitForUsage() {
+          return '积分/百万Token'
         }
 
         const conditionSourceLabels = { body: '请求体参数', header: '请求头', time: '时间' }
@@ -3167,8 +3167,7 @@ when(param("service_tier") == "priority") * 2</textarea><span class="field-hint"
         }
 
         function updateDerivedUnitHint() {
-          const unit = unitForUsage($('mvpUsageRule').value)
-          $('mvpDerivedUnitHint').textContent = `计费单位自动设为${unit}，全部规格统一使用。`
+          $('mvpDerivedUnitHint').textContent = '计费单位固定为积分/百万Token，全部规格统一使用。'
         }
 
         function modelReferenced(model) {
