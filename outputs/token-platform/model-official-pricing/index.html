@@ -1815,7 +1815,7 @@
             <div class="mvp-toolbar">
               <div class="mvp-filters">
                 <div class="mvp-search"><span>⌕</span><input class="mvp-control" id="mvpModelSearch" placeholder="搜索模型名称" /></div>
-                <select class="mvp-select" id="mvpCategoryFilter"><option value="all">全部分类</option><option>文本</option><option>图像</option><option>视频</option><option>音频</option><option>多模态</option></select>
+                <select class="mvp-select" id="mvpCategoryFilter"><option value="all">全部分类</option><option>文本</option><option>视频</option></select>
                 <select class="mvp-select" id="mvpModeFilter"><option value="all">全部计价方式</option><option value="token">按 Token</option><option value="request">按次</option><option value="spec">按规格模板</option></select>
                 <select class="mvp-select" id="mvpPlazaFilter"><option value="all">全部展示范围</option><option value="yes">模型广场展示</option><option value="no">模型广场不展示</option></select>
               </div>
@@ -3088,23 +3088,6 @@ when(param("service_tier") == "priority") * 2</textarea><span class="field-hint"
                 ['输入 Token', 18, 20, '积分/百万Token'],
                 ['输出 Token', 72, 80, '积分/百万Token'],
                 ['缓存读取', 4, 5, '积分/百万Token'],
-              ],
-            }],
-          },
-          {
-            id: 'dall-e-3', name: 'dall-e-3', category: '图像', mode: 'request', plaza: false,
-            supplierRefs: 0, enterpriseRefs: 0, taskRefs: 0, updatedAt: '2026-08-21 09:45:11', requestPrice: 120,
-            history: [{ mode: '按次 · 首次配置', operator: 'admin', time: '2026-08-21 09:45:11', items: [['单次价格', null, 120, '积分/次']] }],
-          },
-          {
-            id: 'whisper-1', name: 'whisper-1', category: '音频', mode: 'token', plaza: true,
-            supplierRefs: 1, enterpriseRefs: 2, taskRefs: 77, updatedAt: '2026-08-19 12:20:08', inputPrice: 36, outputPrice: 60, cachePrice: '',
-            history: [{
-              mode: '按 Token', operator: 'admin', time: '2026-08-19 12:20:08',
-              items: [
-                ['输入 Token', 30, 36, '积分/百万Token'],
-                ['输出 Token', 55, 60, '积分/百万Token'],
-                ['缓存读取', null, null, '积分/百万Token'],
               ],
             }],
           },
